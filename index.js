@@ -1,27 +1,54 @@
-module.exports = {
+const defaultEmphasis = require('./configs/defaultEmphasis.json');
+
+class HeuristicEngine {
+
     /**
-     * Returns a percentage of how likely the given input is spam.
+     * Returns probability of a spam.
      * @param target
+     * @returns {number}
      */
-    getSpamProbability: (target) => {
+    getProbability(target) {
+        return 0;
+    };
+
+    /**
+     * Returns severity of a spam.
+     * @param target
+     * @returns {number}
+     */
+    getSeverity(target) {
+        return 0;
+    };
+
+    /**
+     * Sets an emphasis for the heuristics.
+     * Emphasis includes severity values for different heuristics, it will basically tell
+     * how serious some distinct form of spam is.
+     * @param userEmphasis
+     */
+    static getProcessedEmphasis(userEmphasis) {
         try {
-            // If the target is not in its correct form, return undefined.
-            if (target.constructor !== Array && typeof target !== 'string') return undefined;
-            // We'll handle the target as an array.
-            const targetArr = target.constructor !== Array ? [target] : target;
-            // Probability of a detected spam 0: none, 100: fully certain.
-            // Severity of s spam 0: low, 10: high.
-            let probability = 0, severity = 0;
-
-            // TODO: the actual code.
-
-            // Return the probability and severity.
-            return {probability, severity};
+            return userEmphasis !== undefined
+                ? JSON.parse(userEmphasis)
+                    ? userEmphasis
+                    : defaultEmphasis
+                : defaultEmphasis;
         } catch (e) {
             console.log(e.stack);
             console.log(process.version);
-            console.log('Error: Failed to process the given input.');
-            return undefined;
+            if (userEmphasis !== undefined) {
+                console.log(`Error: failed to process the custom emphasis. Please check your arguments.`)
+            } else {
+                console.log(`Error: Failed to process the default emphasis.`);
+            }
+            return defaultEmphasis;
         }
-    }
-};
+    };
+
+    constructor(userEmphasis) {
+        this.emphasis = this.constructor.getProcessedEmphasis(userEmphasis);
+    };
+
+}
+
+module.exports = HeuristicEngine;
