@@ -2,8 +2,12 @@ const Immutable = require('immutable');
 
 module.exports = class Suspect {
 
-    constructor(id) {
-        this.id = id;
+    get id() {
+        return this.suspectId;
+    }
+
+    constructor(sId) {
+        this.suspectId = sId;
         this.history = Immutable.OrderedMap({})
     }
 };

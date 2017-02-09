@@ -21,6 +21,7 @@ exports.setGroup = function (test) {
     const actual = new Heuristic();
     actual.setGroup('0');
     const expected = {
+        groupId: '0',
         suspectsMap: Immutable.Map({})
     };
     test.deepEqual(actual.groups.get('0'), expected);

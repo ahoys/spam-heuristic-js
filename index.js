@@ -7,14 +7,14 @@ module.exports = class HeuristicEngine {
 
     /**
      * Sets a new group.
-     * @param id
+     * @param gId
      */
-    setGroup(id) {
-        if (id && (typeof id === 'string' || typeof id === 'number')) {
-            if (this.groupsMap.has(id)) {
+    setGroup(gId) {
+        if (gId && (typeof gId === 'string' || typeof gId === 'number')) {
+            if (this.groupsMap.has(gId)) {
                 throw new Error('A group with the same id already exists.');
             } else {
-                this.groupsMap = this.groupsMap.set(id, new Group(id));
+                this.groupsMap = this.groupsMap.set(gId, new Group(gId));
             }
         } else {
             throw new TypeError('Invalid id for a group.')
