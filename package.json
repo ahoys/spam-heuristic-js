@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git://github.com/ahoys/spam-detect-js.git"
   },
+  "dependencies" :{
+    "immutable": "~3.8.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-preset-es2015": "^6.22.0"

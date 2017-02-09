@@ -1,23 +1,40 @@
 const defaultEmphasis = require('./configs/defaultEmphasis.json');
+const immutable = require('immutable');
 
 class HeuristicEngine {
 
     /**
-     * Returns probability of a spam.
-     * @param target
-     * @returns {number}
+     * Sets a new suspect for heuristics.
+     * Each suspect has their own probability of being a spammer.
+     * @param uId: mandatory
+     * @param immune: optional
      */
-    getProbability(target) {
-        return 0;
+    setSuspect(uId, immune) {
+        this.subjects = this.subjects.set(uId, {
+            id: uId,
+            immune: Boolean(immune),
+            probability: 0,
+            severity: 0
+        });
     };
 
     /**
-     * Returns severity of a spam.
-     * @param target
-     * @returns {number}
+     * Returns a suspect.
+     * @param uId
+     * @returns {*}
      */
-    getSeverity(target) {
-        return 0;
+    getSuspect(uId) {
+        return this.subjects.has(uId)
+            ? this.subjects.get(uId)
+            : undefined;
+    };
+
+    /**
+     * Returns all suspects.
+     * @returns {*}
+     */
+    getSubjects() {
+        return this.suspects.toJS();
     };
 
     /**
@@ -47,6 +64,7 @@ class HeuristicEngine {
 
     constructor(userEmphasis) {
         this.emphasis = this.constructor.getProcessedEmphasis(userEmphasis);
+        this.suspects = new immutable.Map({});
     };
 
 }
