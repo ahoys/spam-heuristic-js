@@ -1,6 +1,7 @@
 const defaultEmphasis = require('./configs/defaultEmphasis.json');
 const Suspect = require('./components/inc.class.Suspect');
 const Group = require('./components/inc.class.Group');
+const Immutable = require('immutable');
 
 module.exports = class HeuristicEngine {
 
@@ -10,55 +11,24 @@ module.exports = class HeuristicEngine {
      */
     setGroup(id) {
         if (id && (typeof id === 'string' || typeof id === 'number')) {
-            try {
-                const groupObj = new Group(id);
-                this.groupsArr.push(groupObj);
-            } catch (e) {
-                throw new Error('Failed to set a new group.')
+            if (this.groupsMap.has(id)) {
+                throw new Error('A group with the same id already exists.');
+            } else {
+                this.groupsMap = this.groupsMap.set(id, new Group());
             }
         } else {
             throw new TypeError('Invalid id for a group.')
         }
     };
-
-    /**
-     * Sets a new suspect.
-     * @param id
-     */
-    setSuspect(id) {
-        if (id && (typeof id === 'string' || typeof id === 'number')) {
-            try {
-                const suspectObj = new Suspect(id);
-                this.suspectsArr.push(suspectObj);
-            } catch (e) {
-                throw new Error('Failed to set a new suspect.')
-            }
-        } else {
-            throw new TypeError('Invalid id for a suspect.')
-        }
-    };
-
     /**
      * Returns all groups.
      * @returns {Array}
      */
     get groups() {
         try {
-            return this.groupsArr;
+            return this.groupsMap;
         } catch (e) {
             throw new Error('Returning all groups failed.');
-        }
-    }
-
-    /**
-     * Returns all suspects.
-     * @returns {Array}
-     */
-    get suspects() {
-        try {
-            return this.suspectsArr;
-        } catch (e) {
-            throw new Error('Returning all suspects failed.');
         }
     }
 
@@ -89,7 +59,6 @@ module.exports = class HeuristicEngine {
 
     constructor(userEmphasis) {
         this.emphasis = this.constructor.getProcessedEmphasis(userEmphasis);
-        this.groupsArr = [];
-        this.suspectsArr = [];
+        this.groupsMap = Immutable.Map({});
     };
 };
