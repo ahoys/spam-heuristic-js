@@ -14,7 +14,7 @@ module.exports = class HeuristicEngine {
             if (this.groupsMap.has(gId)) {
                 throw new Error('A group with the same id already exists.');
             } else {
-                this.groupsMap = this.groupsMap.set(gId, new Group(gId));
+                this.groupsMap = this.groupsMap.set(gId, new Group());
             }
         } else {
             throw new TypeError('Invalid id for a group.')

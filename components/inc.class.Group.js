@@ -8,7 +8,7 @@ module.exports = class Group {
             if (this.suspectsMap.has(sId)) {
                 throw new Error('A suspect with the same id already exists.');
             } else {
-                this.suspectsMap = this.suspectsMap.set(sId, new Suspect(sId));
+                this.suspectsMap = this.suspectsMap.set(sId, new Suspect());
             }
         } else {
             throw new TypeError('Invalid id for a suspect.')
@@ -19,12 +19,7 @@ module.exports = class Group {
         return this.suspectsMap;
     }
 
-    get id() {
-        return this.groupId;
-    }
-
-    constructor(gId) {
-        this.groupId = gId;
+    constructor() {
         this.suspectsMap = Immutable.Map({});
     }
 };
