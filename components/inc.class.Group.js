@@ -8,7 +8,7 @@ module.exports = class Group {
             if (this.suspectsMap.has(id)) {
                 throw new Error('A suspect with the same id already exists.');
             } else {
-                this.suspectsMap = this.suspectsMap.set(id, new Suspect());
+                this.suspectsMap = this.suspectsMap.set(id, new Suspect(id));
             }
         } else {
             throw new TypeError('Invalid id for a suspect.')
