@@ -1,41 +1,66 @@
 const defaultEmphasis = require('./configs/defaultEmphasis.json');
-const immutable = require('immutable');
+const Suspect = require('./components/inc.class.Suspect');
+const Group = require('./components/inc.class.Group');
 
-class HeuristicEngine {
+module.exports = class HeuristicEngine {
 
     /**
-     * Sets a new suspect for heuristics.
-     * Each suspect has their own probability of being a spammer.
-     * @param uId: mandatory
-     * @param immune: optional
+     * Sets a new group.
+     * @param id
      */
-    setSuspect(uId, immune) {
-        this.subjects = this.subjects.set(uId, {
-            id: uId,
-            immune: Boolean(immune),
-            probability: 0,
-            severity: 0
-        });
+    setGroup(id) {
+        if (id && (typeof id === 'string' || typeof id === 'number')) {
+            try {
+                const groupObj = new Group(id);
+                this.groupsArr.push(groupObj);
+            } catch (e) {
+                throw new Error('Failed to set a new group.')
+            }
+        } else {
+            throw new TypeError('Invalid id for a group.')
+        }
     };
 
     /**
-     * Returns a suspect.
-     * @param uId
-     * @returns {*}
+     * Sets a new suspect.
+     * @param id
      */
-    getSuspect(uId) {
-        return this.subjects.has(uId)
-            ? this.subjects.get(uId)
-            : undefined;
+    setSuspect(id) {
+        if (id && (typeof id === 'string' || typeof id === 'number')) {
+            try {
+                const suspectObj = new Suspect(id);
+                this.suspectsArr.push(suspectObj);
+            } catch (e) {
+                throw new Error('Failed to set a new suspect.')
+            }
+        } else {
+            throw new TypeError('Invalid id for a suspect.')
+        }
     };
+
+    /**
+     * Returns all groups.
+     * @returns {Array}
+     */
+    get groups() {
+        try {
+            return this.groupsArr;
+        } catch (e) {
+            throw new Error('Returning all groups failed.');
+        }
+    }
 
     /**
      * Returns all suspects.
-     * @returns {*}
+     * @returns {Array}
      */
-    getSubjects() {
-        return this.suspects.toJS();
-    };
+    get suspects() {
+        try {
+            return this.suspectsArr;
+        } catch (e) {
+            throw new Error('Returning all suspects failed.');
+        }
+    }
 
     /**
      * Sets an emphasis for the heuristics.
@@ -64,9 +89,7 @@ class HeuristicEngine {
 
     constructor(userEmphasis) {
         this.emphasis = this.constructor.getProcessedEmphasis(userEmphasis);
-        this.suspects = new immutable.Map({});
+        this.groupsArr = [];
+        this.suspectsArr = [];
     };
-
-}
-
-module.exports = HeuristicEngine;
+};
