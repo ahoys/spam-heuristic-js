@@ -20,6 +20,7 @@ module.exports = class HeuristicEngine {
             throw new TypeError('Invalid id for a group.')
         }
     };
+
     /**
      * Returns all groups.
      * @returns {Array}
