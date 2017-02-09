@@ -19,7 +19,8 @@ module.exports = class Group {
         return this.suspectsMap;
     }
 
-    constructor(groupId) {
+    constructor(id) {
+        this.id = id;
         this.suspectsMap = Immutable.Map({});
     }
 };

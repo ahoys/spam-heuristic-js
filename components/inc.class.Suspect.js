@@ -1,8 +1,9 @@
-const immutable = require('immutable');
+const Immutable = require('immutable');
 
 module.exports = class Suspect {
 
-    constructor(suspectId, groupId) {
-        this.groups = [];
+    constructor(id) {
+        this.id = id;
+        this.history = Immutable.OrderedMap({})
     }
 };
