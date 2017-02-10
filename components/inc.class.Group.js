@@ -3,6 +3,11 @@ const Immutable = require('immutable');
 
 module.exports = class Group {
 
+    /**
+     * Sets a new suspect.
+     * @param sId
+     * @returns {*}
+     */
     setSuspect(sId) {
         try {
             if (
@@ -21,6 +26,11 @@ module.exports = class Group {
         }
     }
 
+    /**
+     * Returns an existing suspect.
+     * @param sId
+     * @returns {undefined}
+     */
     getSuspect(sId) {
         try {
             return this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : undefined;
