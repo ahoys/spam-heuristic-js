@@ -3,6 +3,14 @@ const Immutable = require('immutable');
 module.exports = class Suspect {
 
     /**
+     * Makes sure eventMap or eventHistoryMap won't get too large.
+     * @returns {number}
+     */
+    static cleanEvents() {
+        return 0;
+    };
+
+    /**
      * Sets a new event.
      * All events are investigated and validated based on different heuristics.
      * @param event
@@ -17,6 +25,9 @@ module.exports = class Suspect {
                 const eId = Object.prototype.toString.call(date) === '[object Date]'
                     ? date
                     : new Date();
+
+                // TODO: use heuristics and create an event object with probability and severity.
+
                 this.eventMap = this.eventMap.set(eId, event);
                 return eId;
             } else {
