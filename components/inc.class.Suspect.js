@@ -13,12 +13,13 @@ module.exports = class Suspect {
                 event !== undefined &&
                 (typeof event === 'string' || typeof event === 'number')
             ) {
-                this.eventMap = this.eventMap.set(
-                    Object.prototype.toString.call(date) === '[object Date]'
-                        ? date
-                        : new Date(),
-                    event
-                );
+                const eId = Object.prototype.toString.call(date) === '[object Date]'
+                    ? date
+                    : new Date();
+                this.eventMap = this.eventMap.set(eId, event);
+                return eId;
+            } else {
+                return undefined;
             }
         } catch (e) {
             console.log(`[${new Date()}] spam-heuristic: Settings an event failed.`);
