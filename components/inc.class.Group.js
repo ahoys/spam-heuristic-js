@@ -10,10 +10,14 @@ module.exports = class Group {
                 (typeof sId === 'string' || typeof sId === 'number') &&
                 this.suspectsMap.has(sId) === false
             ) {
-                this.suspectsMap = this.suspectsMap.set(sId, new Suspect())
+                const newSuspectObj = new Suspect();
+                this.suspectsMap = this.suspectsMap.set(sId, newSuspectObj);
+                return newSuspectObj;
+            } else {
+                return undefined;
             }
         } catch (e) {
-            throw new Error(`[${new Date()}] spam-heuristic: Setting a new suspect failed.`);
+            console.log(`[${new Date()}] spam-heuristic: Setting a new suspect failed.`);
         }
     }
 
@@ -21,7 +25,7 @@ module.exports = class Group {
         try {
             return this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : undefined;
         } catch (e) {
-            throw new Error(`[${new Date()}] spam-heuristic: Returning a suspect failed.`);
+            console.log(`[${new Date()}] spam-heuristic: Returning a suspect failed.`);
         }
     }
 

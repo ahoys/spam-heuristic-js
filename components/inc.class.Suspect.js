@@ -8,7 +8,7 @@ module.exports = class Suspect {
                 this.historyMap = this.historyMap.push(new Date(), String(ln));
             }
         } catch (e) {
-            throw new Error(`[${new Date()}] spam-heuristic: Setting a new history line failed.`);
+            console.log(`[${new Date()}] spam-heuristic: Setting a new history line failed.`);
         }
     }
 
@@ -20,7 +20,7 @@ module.exports = class Suspect {
                 return undefined;
             }
         } catch (e) {
-            throw new Error(`[${new Date()}] spam-heuristic: Returning a history line failed.`);
+            console.log(`[${new Date()}] spam-heuristic: Returning a history line failed.`);
         }
     }
 
@@ -29,6 +29,6 @@ module.exports = class Suspect {
     }
 
     constructor() {
-        this.historyMap = Immutable.Stack();
+        this.historyMap = Immutable.OrderedMap({});
     }
 };

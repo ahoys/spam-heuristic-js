@@ -10,16 +10,31 @@ module.exports = class HeuristicEngine {
      * @param gId
      */
     setGroup(gId) {
-        if (gId && (typeof gId === 'string' || typeof gId === 'number')) {
-            if (this.groupsMap.has(gId)) {
-                throw new Error('A group with the same id already exists.');
+        if (gId !== undefined && (typeof gId === 'string' || typeof gId === 'number')) {
+            if (this.groupsMap.has(gId) === false) {
+                const newGroupObj = new Group();
+                this.groupsMap = this.groupsMap.set(gId, newGroupObj);
+                return newGroupObj;
             } else {
-                this.groupsMap = this.groupsMap.set(gId, new Group());
+                return undefined;
             }
         } else {
             throw new TypeError('Invalid id for a group.')
         }
     };
+
+    /**
+     * Returns an existing group.
+     * @param gId
+     * @returns {undefined}
+     */
+    getGroup(gId) {
+        try {
+            return this.groupsMap.has(gId) ? this.groupsMap.get(gId) : undefined;
+        } catch (e) {
+            console.log(`[${new Date()}] spam-heuristic: Returning a group failed.`);
+        }
+    }
 
     /**
      * Returns all groups.
