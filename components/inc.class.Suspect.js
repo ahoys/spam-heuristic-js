@@ -12,6 +12,18 @@ module.exports = class Suspect {
         }
     }
 
+    getHistoryLine(key) {
+        try {
+            if (this.historyMap.has(key)) {
+                return this.historyMap.get(key);
+            } else {
+                return undefined;
+            }
+        } catch (e) {
+            throw new Error(`[${new Date()}] spam-heuristic: Returning a history line failed.`);
+        }
+    }
+
     get history() {
         return this.historyMap;
     }
