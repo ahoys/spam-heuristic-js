@@ -58,7 +58,8 @@ exports.getGroup = function (test) {
 exports.setSuspect = function (test) {
     const actual = newGroup('1').setSuspect('1');
     const expected = {
-        historyMap: Immutable.OrderedMap({})
+        eventMap: Immutable.OrderedMap({}),
+        eventHistoryMap: Immutable.OrderedMap({})
     };
     test.deepEqual(actual, expected);
     test.expect(1);
@@ -70,7 +71,8 @@ exports.getSuspect = function (test) {
     group.setSuspect('1');
     const actual = group.getSuspect('1');
     const expected = {
-        historyMap: Immutable.OrderedMap({})
+        eventMap: Immutable.OrderedMap({}),
+        eventHistoryMap: Immutable.OrderedMap({})
     };
     test.deepEqual(actual, expected);
     test.expect(1);
