@@ -2,33 +2,47 @@ const Immutable = require('immutable');
 
 module.exports = class Suspect {
 
-    setHistoryLine(ln) {
+    /**
+     * Sets a new event.
+     * @param event
+     * @param date
+     */
+    setEvent(event, date) {
         try {
-            if (ln !== undefined) {
-                this.historyMap = this.historyMap.push(new Date(), String(ln));
+            if (
+                event !== undefined &&
+                (typeof event === 'string' || typeof event === 'number')
+            ) {
+                this.eventMap = this.eventMap.set(
+                    Object.prototype.toString.call(date) === '[object Date]'
+                        ? date
+                        : new Date(),
+                    event
+                );
             }
         } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Setting a new history line failed.`);
+            console.log(`[${new Date()}] spam-heuristic: Settings an event failed.`);
         }
     }
 
-    getHistoryLine(key) {
-        try {
-            if (this.historyMap.has(key)) {
-                return this.historyMap.get(key);
-            } else {
-                return undefined;
-            }
-        } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Returning a history line failed.`);
-        }
+    /**
+     * Returns all the stored events of a suspect.
+     * @returns {*}
+     */
+    get events() {
+        return this.eventMap;
     }
 
-    get history() {
-        return this.historyMap;
+    /**
+     * Returns the entire event history of a suspect.
+     * @returns {*}
+     */
+    get eventHistory() {
+        return this.eventHistoryMap;
     }
 
     constructor() {
-        this.historyMap = Immutable.OrderedMap({});
+        this.eventMap = Immutable.OrderedMap({});
+        this.eventHistoryMap = Immutable.OrderedMap({});
     }
 };
