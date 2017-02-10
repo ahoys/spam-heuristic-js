@@ -39,6 +39,10 @@ module.exports = class Group {
         }
     }
 
+    /**
+     * Returns all suspects.
+     * @returns {*}
+     */
     get suspects() {
         return this.suspectsMap;
     }

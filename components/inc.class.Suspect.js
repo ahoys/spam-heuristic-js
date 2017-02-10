@@ -4,6 +4,7 @@ module.exports = class Suspect {
 
     /**
      * Sets a new event.
+     * All events are investigated and validated based on different heuristics.
      * @param event
      * @param date
      */
