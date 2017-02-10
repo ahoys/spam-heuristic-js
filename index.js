@@ -10,16 +10,18 @@ module.exports = class HeuristicEngine {
      * @param gId
      */
     setGroup(gId) {
-        if (gId !== undefined && (typeof gId === 'string' || typeof gId === 'number')) {
-            if (this.groupsMap.has(gId) === false) {
+        try {
+            if (
+                gId !== undefined &&
+                (typeof gId === 'string' || typeof gId === 'number') &&
+                !this.groupsMap.has(gId)
+            ) {
                 const newGroupObj = new Group();
                 this.groupsMap = this.groupsMap.set(gId, newGroupObj);
                 return newGroupObj;
-            } else {
-                return undefined;
             }
-        } else {
-            throw new TypeError('Invalid id for a group.')
+        } catch (e) {
+            console.log(`[${new Date()}] spam-heuristic: Setting a new group failed.`);
         }
     };
 
