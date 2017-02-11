@@ -39,7 +39,12 @@ module.exports = class Event {
     }
 
     get id() {
-        return this.eventId;
+        try {
+            return String(this.eventId);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's id failed.`);
+            return undefined;
+        }
     }
 
     /**
@@ -48,7 +53,12 @@ module.exports = class Event {
      * @returns {number}
      */
     get certainty() {
-        return this.certaintyValue;
+        try {
+            return Number(this.certaintyValue);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's certainty failed.`);
+            return 0;
+        }
     }
 
     /**
@@ -57,7 +67,12 @@ module.exports = class Event {
      * @returns {number}
      */
     get severity() {
-        return this.severityValue;
+        try {
+            return Number(this.severityValue);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's severity failed.`);
+            return 0;
+        }
     }
 
     constructor(id, target) {

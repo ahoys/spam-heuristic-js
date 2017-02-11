@@ -40,7 +40,7 @@ module.exports = class Suspect {
         }
     }
 
-    setEventHighlight(eId, event) {
+    static setEventHighlight(eId, event) {
         try {
             if (!this.eventHighlightsMap.has(eId)) {
                 this.eventHighlightsMap = this.eventHighlightsMap.set(eId, event);
@@ -51,6 +51,43 @@ module.exports = class Suspect {
         } catch (e) {
             console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event highlight failed.`);
             return undefined;
+        }
+    }
+
+    /**
+     * Returns certainty that this subject is a real threat.
+     * @returns {number}
+     */
+    get certainty() {
+        try {
+            // TODO: based on event certainty, calculate certainty.
+            return 0;
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning certainty failed.`);
+            return 0;
+        }
+    }
+
+    /**
+     * Returns severity of this subject's violations.
+     * @returns {number}
+     */
+    get severity() {
+        try {
+            // TODO: based on event severity, calculate severity.
+            return 0;
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning severity failed.`);
+            return 0;
+        }
+    }
+
+    get violations() {
+        try {
+            return Number(this.eventHighlightsMap.size);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning violation count failed.`);
+            return 0;
         }
     }
 
