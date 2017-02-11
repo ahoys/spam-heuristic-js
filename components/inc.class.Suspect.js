@@ -1,4 +1,5 @@
 const Immutable = require('immutable');
+const defaultSettings = require('../configs/defaultSettings.json');
 
 module.exports = class Suspect {
 
@@ -20,7 +21,8 @@ module.exports = class Suspect {
         try {
             if (
                 event !== undefined &&
-                (typeof event === 'string' || typeof event === 'number')
+                (typeof event === 'string' || typeof event === 'number') &&
+                this.eventMap.size < defaultSettings.BUFFER.MAX_EVENT_MAP_SIZE
             ) {
                 const eId = Object.prototype.toString.call(date) === '[object Date]'
                     ? date
@@ -35,6 +37,26 @@ module.exports = class Suspect {
             }
         } catch (e) {
             console.log(`[${new Date()}] spam-heuristic: Settings an event failed.`);
+        }
+    }
+
+    setEventHistory(event, date) {
+        try {
+            if (
+                event !== undefined &&
+                (typeof event === 'string' || typeof event === 'number') &&
+                this.eventHistoryMap.size < defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE
+            ) {
+                const eId = Object.prototype.toString.call(date) === '[object Date]'
+                    ? date
+                    : new Date();
+                this.eventHistoryMap = this.eventHistoryMap.set(eId, event);
+                return eId;
+            } else {
+                return undefined;
+            }
+        } catch (e) {
+            console.log(`[${new Date()}] spam-heuristic: Settings an event history failed.`);
         }
     }
 

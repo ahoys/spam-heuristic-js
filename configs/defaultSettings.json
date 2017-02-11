@@ -1,0 +1,8 @@
+{
+  "BUFFER": {
+    "MAX_GROUP_MAP_SIZE": 32,
+    "MAX_SUSPECTS_MAP_SIZE": 64,
+    "MAX_EVENT_MAP_SIZE": 32,
+    "MAX_EVENT_HISTORY_MAP_SIZE": 32
+  }
+}
