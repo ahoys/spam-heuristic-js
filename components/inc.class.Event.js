@@ -38,6 +38,10 @@ module.exports = class Event {
             : defaultSettings.EVENT.MAX_SEVERITY;
     }
 
+    /**
+     * Returns id of an event.
+     * @returns {*}
+     */
     get id() {
         try {
             return String(this.eventId);

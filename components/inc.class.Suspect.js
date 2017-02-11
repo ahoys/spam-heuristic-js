@@ -5,57 +5,79 @@ const defaultSettings = require('../configs/defaultSettings.json');
 module.exports = class Suspect {
 
     /**
-     * Makes sure eventMap or eventHistoryMap won't get too large.
+     * Returns a suitable id for an event or event highlight.
+     * @param type
      * @returns {number}
      */
-    static cleanEvents() {
-        return 0;
-    };
+    static getMapId(type) {
+        try {
+            // Use indexing to make sure the buffer limits are not exceeded.
+            if (type === 'eventMap') {
+                return this.eventMap.size < defaultSettings.BUFFER.MAX_EVENT_MAP_SIZE
+                    ? Number(this.eventMap.size)
+                    : 0;
+            } else if (type === 'eventHighlightsMap') {
+                return this.eventHighlightsMap.size < defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE
+                    ? Number(this.eventHighlightsMap.size)
+                    : 0;
+            }
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Creation of an id failed.`);
+            return 0;
+        }
+    }
 
     /**
-     * Sets a new event.
+     * Records a new event highlight.
+     * @param eventObj
+     * @returns {string}
+     */
+    static setEventHighlight(eventObj) {
+        try {
+            // Log the highlight and return the id of this record.
+            const ehId = this.getMapId('eventHighlightsMap');
+            this.eventHighlightsMap = this.eventHighlightsMap.set(ehId, eventObj);
+            return String(ehId);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event highlight failed.`);
+            return '';
+        }
+    }
+
+    /**
+     * Sets a new event for a suspect.
      * All events are investigated and validated based on different heuristics.
      * @param target
+     * @returns {string}
      */
     setEvent(target) {
         try {
             if (typeof target === 'string') {
-                const eId = `${this.suspectId}-${new Date()}`;
+                // Create a new event based on the target string.
+                const eId = this.getMapId('eventMap');
                 const eventObj = new Event(eId, target);
                 if (
                     eventObj.certainty >= defaultSettings.EVENT.HIGHLIGHT_CERTAINTY_THRESHOLD ||
                     eventObj.severity >= defaultSettings.EVENT.HIGHLIGHT_SEVERITY_THRESHOLD
                 ) {
-                    this.setEventHighlight(eId, eventObj);
+                    // A noteworthy event found. Write a record.
+                    this.setEventHighlight(eventObj);
                 }
+                // Log the event and return the id of this record.
                 this.eventMap = this.eventMap.set(eId, eventObj);
-                return eId;
+                return String(eId);
             } else {
                 console.log(`[${new Date()}][Type Error] spam-heuristic: Setting an event failed.`);
-                return undefined;
+                return '';
             }
         } catch (e) {
             console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event failed.`);
-            return undefined;
-        }
-    }
-
-    static setEventHighlight(eId, event) {
-        try {
-            if (!this.eventHighlightsMap.has(eId)) {
-                this.eventHighlightsMap = this.eventHighlightsMap.set(eId, event);
-            } else {
-                console.log(`[${new Date()}][Internal Error] spam-heuristic: An event highlight already exists.`);
-                return undefined;
-            }
-        } catch (e) {
-            console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event highlight failed.`);
-            return undefined;
+            return '';
         }
     }
 
     /**
-     * Returns certainty that this subject is a real threat.
+     * Returns certainty that a subject is a real threat.
      * @returns {number}
      */
     get certainty() {
@@ -69,7 +91,7 @@ module.exports = class Suspect {
     }
 
     /**
-     * Returns severity of this subject's violations.
+     * Returns severity of a subject's violations.
      * @returns {number}
      */
     get severity() {
@@ -82,6 +104,10 @@ module.exports = class Suspect {
         }
     }
 
+    /**
+     * Returns a number of violations by a suspect.
+     * @returns {number}
+     */
     get violations() {
         try {
             return Number(this.eventHighlightsMap.size);
@@ -91,25 +117,44 @@ module.exports = class Suspect {
         }
     }
 
+    /**
+     * Returns id of a suspect.
+     * @returns {string}
+     */
     get id() {
-        return this.suspectId;
+        try {
+            return String(this.suspectId);
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning suspect's id failed.`);
+            return '';
+        }
     }
 
     /**
      * Returns all the stored events of a suspect.
-     * @returns {*}
+     * @returns {Map}
      */
     get events() {
-        return this.eventMap;
+        try {
+            return this.eventMap;
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning suspect's event map failed.`);
+            return Immutable.Map({});
+        }
     }
 
     /**
-     * Returns an ordered Map of event highlights.
+     * Returns a map of event highlights.
      * By event highlights we mean events worth of noticing because of their high certainty, severity or both.
-     * @returns {*}
+     * @returns {Map}
      */
     get eventHighlights() {
-        return this.eventHighlightsMap;
+        try {
+            return this.eventHighlightsMap;
+        } catch (e) {
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning suspect's highlights map failed.`);
+            return Immutable.Map({});
+        }
     }
 
     constructor(id) {
