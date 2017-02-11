@@ -1,3 +1,4 @@
+const Event = require('./inc.class.Event');
 const Immutable = require('immutable');
 const defaultSettings = require('../configs/defaultSettings.json');
 
@@ -14,50 +15,47 @@ module.exports = class Suspect {
     /**
      * Sets a new event.
      * All events are investigated and validated based on different heuristics.
-     * @param event
-     * @param date
+     * @param target
      */
-    setEvent(event, date) {
+    setEvent(target) {
         try {
-            if (
-                event !== undefined &&
-                (typeof event === 'string' || typeof event === 'number') &&
-                this.eventMap.size < defaultSettings.BUFFER.MAX_EVENT_MAP_SIZE
-            ) {
-                const eId = Object.prototype.toString.call(date) === '[object Date]'
-                    ? date
-                    : new Date();
-
-                // TODO: use heuristics and create an event object with probability and severity.
-
-                this.eventMap = this.eventMap.set(eId, event);
+            if (typeof target === 'string') {
+                const eId = `${this.suspectId}-${new Date()}`;
+                const eventObj = new Event(eId, target);
+                if (
+                    eventObj.certainty >= defaultSettings.EVENT.HIGHLIGHT_CERTAINTY_THRESHOLD ||
+                    eventObj.severity >= defaultSettings.EVENT.HIGHLIGHT_SEVERITY_THRESHOLD
+                ) {
+                    this.setEventHighlight(eId, eventObj);
+                }
+                this.eventMap = this.eventMap.set(eId, eventObj);
                 return eId;
             } else {
+                console.log(`[${new Date()}][Type Error] spam-heuristic: Setting an event failed.`);
                 return undefined;
             }
         } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Settings an event failed.`);
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event failed.`);
+            return undefined;
         }
     }
 
-    setEventHistory(event, date) {
+    setEventHighlight(eId, event) {
         try {
-            if (
-                event !== undefined &&
-                (typeof event === 'string' || typeof event === 'number') &&
-                this.eventHistoryMap.size < defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE
-            ) {
-                const eId = Object.prototype.toString.call(date) === '[object Date]'
-                    ? date
-                    : new Date();
-                this.eventHistoryMap = this.eventHistoryMap.set(eId, event);
-                return eId;
+            if (!this.eventHighlightsMap.has(eId)) {
+                this.eventHighlightsMap = this.eventHighlightsMap.set(eId, event);
             } else {
+                console.log(`[${new Date()}][Internal Error] spam-heuristic: An event highlight already exists.`);
                 return undefined;
             }
         } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Settings an event history failed.`);
+            console.log(`[${new Date()}][Internal Error] spam-heuristic: Setting an event highlight failed.`);
+            return undefined;
         }
+    }
+
+    get id() {
+        return this.suspectId;
     }
 
     /**
@@ -69,15 +67,17 @@ module.exports = class Suspect {
     }
 
     /**
-     * Returns the entire event history of a suspect.
+     * Returns an ordered Map of event highlights.
+     * By event highlights we mean events worth of noticing because of their high certainty, severity or both.
      * @returns {*}
      */
-    get eventHistory() {
-        return this.eventHistoryMap;
+    get eventHighlights() {
+        return this.eventHighlightsMap;
     }
 
-    constructor() {
+    constructor(id) {
+        this.suspectId = String(id);
         this.eventMap = Immutable.OrderedMap({});
-        this.eventHistoryMap = Immutable.OrderedMap({});
+        this.eventHighlightsMap = Immutable.OrderedMap({});
     }
 };
