@@ -39,19 +39,6 @@ module.exports = class Event {
     }
 
     /**
-     * Returns id of an event.
-     * @returns {*}
-     */
-    get id() {
-        try {
-            return String(this.eventId);
-        } catch (e) {
-            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's id failed.`);
-            return undefined;
-        }
-    }
-
-    /**
      * Returns the certainty of this event.
      * By certainty we mean how certain we are about our findings (severity) considering this event.
      * @returns {number}
@@ -79,8 +66,7 @@ module.exports = class Event {
         }
     }
 
-    constructor(id, target) {
-        this.eventId = String(id);
+    constructor(target) {
         this.certaintyValue = this.getCertainty(target);
         this.severityValue = this.getSeverity(target);
     }

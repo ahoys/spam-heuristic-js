@@ -1,7 +1,19 @@
 const Suspect = require('./inc.class.Suspect');
+const Event = require('./inc.class.Event');
 const Immutable = require('immutable');
 
 module.exports = class Group {
+
+    setEvent(target, suspectObj) {
+        try {
+
+        } catch (e) {
+            console.log(e.stack);
+            console.log(`${new Date()}: Setting a group event failed.`);
+            return this.defaultReturn;
+        }
+    }
+
 
     /**
      * Sets a new suspect.
@@ -48,6 +60,10 @@ module.exports = class Group {
     }
 
     constructor() {
+        // All target events.
+        this.eventsMap = Immutable.OrderedMap({});
+        // Events that got caught to heuristics.
+        this.eventsHighlightMap = Immutable.OrderedMap({});
         this.suspectsMap = Immutable.Map({});
     }
 };
