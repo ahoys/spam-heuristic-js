@@ -99,12 +99,7 @@ module.exports = class HeuristicEngine {
                 : defaultEmphasis;
         } catch (e) {
             console.log(e.stack);
-            console.log(process.version);
-            if (userEmphasis !== undefined) {
-                console.log(`Error: failed to process the custom emphasis. Please check your arguments.`)
-            } else {
-                console.log(`Error: Failed to process the default emphasis.`);
-            }
+            console.log(`${new Date()}: Failed to process the emphasis.`);
             return defaultEmphasis;
         }
     };

@@ -47,7 +47,7 @@ module.exports = class Event {
         try {
             return Number(this.certaintyValue);
         } catch (e) {
-            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's certainty failed.`);
+            console.log(`${new Date()}: Returning event's certainty failed.`);
             return 0;
         }
     }
@@ -61,7 +61,8 @@ module.exports = class Event {
         try {
             return Number(this.severityValue);
         } catch (e) {
-            console.log(`[${new Date()}][Internal Error] spam-heuristic: Returning event's severity failed.`);
+            console.log(e.stack);
+            console.log(`${new Date()}: Returning event's severity failed.`);
             return 0;
         }
     }
