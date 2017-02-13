@@ -30,7 +30,7 @@ module.exports = class HeuristicEngine {
                     thisSuspect = this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : new Suspect();
                     thisSuspect.setEvent(thisEvent);
                     this.suspectsMap = this.suspectsMap.set(sId, thisSuspect);
-                    suspectAnalysis = thisSuspect.getAnalysis();
+                    suspectAnalysis = thisSuspect.getSuspectAnalysis();
                 }
 
                 // Group analysis -----------------------------

@@ -44,12 +44,7 @@ module.exports = class Event {
      * @returns {number}
      */
     get certainty() {
-        try {
-            return Number(this.certaintyValue);
-        } catch (e) {
-            console.log(`${new Date()}: Returning event's certainty failed.`);
-            return 0;
-        }
+        return this.certaintyValue;
     }
 
     /**
@@ -58,16 +53,19 @@ module.exports = class Event {
      * @returns {number}
      */
     get severity() {
-        try {
-            return Number(this.severityValue);
-        } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Returning event's severity failed.`);
-            return 0;
-        }
+        return this.severityValue;
+    }
+
+    /**
+     * Returns the time of creation of an event.
+     * @returns {Date}
+     */
+    get created() {
+        return this.createdValue;
     }
 
     constructor(target) {
+        this.createdValue = new Date();
         this.certaintyValue = this.getCertainty(target);
         this.severityValue = this.getSeverity(target);
     }
