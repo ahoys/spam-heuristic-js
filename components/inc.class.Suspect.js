@@ -4,6 +4,10 @@ const defaultSettings = require('../configs/defaultSettings.json');
 
 module.exports = class Suspect {
 
+    /**
+     * Returns a full analysis of a suspect.
+     * @returns {{certainty: number, severity: number}|*}
+     */
     getSuspectAnalysis() {
         try {
             // TODO: heuristics.
