@@ -61,48 +61,27 @@ module.exports = class HeuristicEngine {
     }
 
     /**
-     * Sets a new group.
-     * @param gId
+     * Returns the emphasis.
+     * @returns {object}
      */
-    setGroup(gId) {
-        try {
-            if (
-                gId !== undefined &&
-                (typeof gId === 'string' || typeof gId === 'number') &&
-                !this.groupsMap.has(gId)
-            ) {
-                const newGroupObj = new Group();
-                this.groupsMap = this.groupsMap.set(gId, newGroupObj);
-                return newGroupObj;
-            }
-        } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Setting a new group failed.`);
-        }
-    };
-
-    /**
-     * Returns an existing group.
-     * @param gId
-     * @returns {undefined}
-     */
-    getGroup(gId) {
-        try {
-            return this.groupsMap.has(gId) ? this.groupsMap.get(gId) : undefined;
-        } catch (e) {
-            console.log(`[${new Date()}] spam-heuristic: Returning a group failed.`);
-        }
+    get emphasis() {
+        return this.emphasisJSON;
     }
 
     /**
-     * Returns all groups.
-     * @returns {Array}
+     * Returns all suspects in an immutable map.
+     * @returns {Map}
+     */
+    get suspects() {
+        return this.suspectsMap;
+    }
+
+    /**
+     * Returns all groups in an immutable map.
+     * @returns {Map}
      */
     get groups() {
-        try {
-            return this.groupsMap;
-        } catch (e) {
-            throw new Error('Returning all groups failed.');
-        }
+        return this.groupsMap;
     }
 
     /**
@@ -131,7 +110,7 @@ module.exports = class HeuristicEngine {
     };
 
     constructor(userEmphasis) {
-        this.emphasis = this.constructor.getProcessedEmphasis(userEmphasis);
+        this.emphasisJSON = this.constructor.getProcessedEmphasis(userEmphasis);
         this.suspectsMap = Immutable.Map({});
         this.groupsMap = Immutable.Map({});
         this.defaultReturn = {
