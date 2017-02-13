@@ -17,34 +17,28 @@ module.exports = class HeuristicEngine {
         try {
             if (typeof target === 'string') {
                 const allowedTypes = ['string', 'number'];
-                let thisTarget, thisSuspect, suspectAnalysis, groupAnalysis;
+                let thisEvent, thisSuspect, suspectAnalysis, groupAnalysis;
 
                 // Target analysis ----------------------------
-                thisTarget = new Event(target);
+                thisEvent = new Event(target);
 
                 // TODO: Use heuristics here for the target.
 
                 // Suspect analysis ---------------------------
                 if (typeof sId in allowedTypes) {
                     // Register an optional suspect.
-                    const thisSuspect = new Suspect();
-                    thisSuspect.setEvent(target);
+                    thisSuspect = this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : new Suspect();
+                    thisSuspect.setEvent(thisEvent);
+                    this.suspectsMap = this.suspectsMap.set(sId, thisSuspect);
                     suspectAnalysis = thisSuspect.getAnalysis();
                 }
 
                 // Group analysis -----------------------------
                 if (typeof gId in allowedTypes && thisSuspect) {
                     // Register an optional group.
-                    let thisGroup;
-                    if (this.groupsMap.has(gId)) {
-                        // An existing group.
-                        thisGroup = this.groupsMap.get(gId);
-                    } else {
-                        // A new group.
-                        thisGroup = new Group(gId);
-                        this.groupsMap = this.groupsMap.set(gId, thisGroup);
-                    }
-                    thisGroup.setEvent(target, thisSuspect);
+                    const thisGroup = this.groupsMap.has(gId) ? this.groupsMap.get(gId) : new Group();
+                    thisGroup.setEvent(thisSuspect);
+                    this.groupsMap = this.groupsMap.set(gId, thisGroup);
                     groupAnalysis = thisGroup.getAnalysis();
                 }
 
