@@ -52,6 +52,14 @@ module.exports = class Event {
     };
 
     /**
+     * Returns the time of creation of an event.
+     * @returns {Date}
+     */
+    get created() {
+        return this.createdValue;
+    }
+
+    /**
      * Returns the certainty of this event.
      * By certainty we mean how certain we are about our findings (severity) considering this event.
      * @returns {number}
@@ -69,17 +77,9 @@ module.exports = class Event {
         return this.severityValue;
     }
 
-    /**
-     * Returns the time of creation of an event.
-     * @returns {Date}
-     */
-    get created() {
-        return this.createdValue;
-    }
-
     constructor(target) {
-        this.createdValue = new Date();
-        this.certaintyValue = this.getCertainty(target);
-        this.severityValue = this.getSeverity(target);
+        this.createdValue = new Date().getTime();
+        this.certaintyValue = Event.getCertainty(target);
+        this.severityValue = Event.getSeverity(target);
     }
 };
