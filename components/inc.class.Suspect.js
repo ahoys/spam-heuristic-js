@@ -5,21 +5,6 @@ const defaultSettings = require('../configs/defaultSettings.json');
 module.exports = class Suspect {
 
     /**
-     * Returns a full analysis of a suspect.
-     * @returns {{certainty: number, severity: number}|*}
-     */
-    getSuspectAnalysis() {
-        try {
-            // TODO: heuristics.
-            return this.defaultReturn;
-        } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Returning analysis failed.`);
-            return this.defaultReturn;
-        }
-    }
-
-    /**
      * Returns a suitable id for an event or event highlight.
      * @param type
      * @returns {number}
@@ -41,28 +26,41 @@ module.exports = class Suspect {
             }
             return id;
         } catch (e) {
-            console.log(`[${new Date()}][Internal Error] spam-heuristic: Creation of an id failed.`);
+            console.log(e.stack);
+            console.log(`${new Date()}: Returning an id failed.`);
             return 0;
         }
     }
 
     /**
-     * Sets an event for a suspect.
+     * Returns a full analysis of a suspect.
+     * @returns {{certainty: number, severity: number}|*}
+     */
+    getSuspectAnalysis() {
+        try {
+            // TODO: heuristics.
+            return this.defaultReturn;
+        } catch (e) {
+            console.log(e.stack);
+            console.log(`${new Date()}: Returning a suspect analysis failed.`);
+            return this.defaultReturn;
+        }
+    }
+
+    /**
+     * Registers an event by a suspect.
      * @param eventObj
      */
-    setEvent(eventObj) {
+    setSuspectEvent(eventObj) {
         try {
             if (eventObj instanceof Event) {
-                const eId = this.getMapId('eventsMap');
-                if (
-                    eventObj.certainty >= defaultSettings.EVENT.HIGHLIGHT_CERTAINTY_THRESHOLD ||
-                    eventObj.severity >= defaultSettings.EVENT.HIGHLIGHT_SEVERITY_THRESHOLD
-                ) {
+                if (eventObj.isNoteworthy()) {
                     // A noteworthy event found. Write a record.
-                    const ehId = this.getMapId('eventsHighlightMap');
-                    this.eventsHighlightMap = this.eventsHighlightMap.set(ehId, eventObj);
+                    this.eventsHighlightMap = this.eventsHighlightMap.set(
+                        this.getMapId('eventsHighlightMap'), eventObj);
+                    this.violationsValue++;
                 }
-                this.eventsMap = this.eventsMap.set(eId, eventObj);
+                this.eventsMap = this.eventsMap.set(this.getMapId('eventsMap'), eventObj);
             }
         } catch (e) {
             console.log(e.stack);
@@ -70,9 +68,27 @@ module.exports = class Suspect {
         }
     }
 
-    constructor() {
+    /**
+     * Returns a violations count of a suspect.
+     * @returns {number}
+     */
+    get violations() {
+        return this.violationsValue;
+    }
+
+    /**
+     * Returns id of a suspect.
+     * @returns {*}
+     */
+    get id() {
+        return this.suspectId;
+    }
+
+    constructor(suspectId) {
+        this.suspectId = suspectId;
         this.eventsMap = Immutable.OrderedMap({});
         this.eventsHighlightMap = Immutable.OrderedMap({});
+        this.violationsValue = 0;
         this.defaultReturn = {
             certainty: 0,
             severity: 0

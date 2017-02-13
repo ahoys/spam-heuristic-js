@@ -27,8 +27,8 @@ module.exports = class HeuristicEngine {
                 // Suspect analysis ---------------------------
                 if (typeof sId in allowedTypes) {
                     // Register an optional suspect.
-                    thisSuspect = this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : new Suspect();
-                    thisSuspect.setEvent(thisEvent);
+                    thisSuspect = this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : new Suspect(sId);
+                    thisSuspect.setSuspectEvent(thisEvent);
                     this.suspectsMap = this.suspectsMap.set(sId, thisSuspect);
                     suspectAnalysis = thisSuspect.getSuspectAnalysis();
                 }
@@ -36,10 +36,10 @@ module.exports = class HeuristicEngine {
                 // Group analysis -----------------------------
                 if (typeof gId in allowedTypes && thisSuspect) {
                     // Register an optional group.
-                    const thisGroup = this.groupsMap.has(gId) ? this.groupsMap.get(gId) : new Group();
-                    thisGroup.setEvent(thisSuspect);
+                    const thisGroup = this.groupsMap.has(gId) ? this.groupsMap.get(gId) : new Group(gId);
+                    thisGroup.setGroupEvent(thisSuspect, thisEvent);
                     this.groupsMap = this.groupsMap.set(gId, thisGroup);
-                    groupAnalysis = thisGroup.getAnalysis();
+                    groupAnalysis = thisGroup.getGroupAnalysis();
                 }
 
                 // Combine results ----------------------------

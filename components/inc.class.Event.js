@@ -38,6 +38,19 @@ module.exports = class Event {
             : defaultSettings.EVENT.MAX_SEVERITY;
     }
 
+    isNoteworthy() {
+        try {
+            return (
+                this.certaintyValue >= defaultSettings.EVENT.HIGHLIGHT_CERTAINTY_THRESHOLD ||
+                this.severityValue >= defaultSettings.EVENT.HIGHLIGHT_SEVERITY_THRESHOLD
+            );
+        } catch (e) {
+            console.log(e.stack);
+            console.log(`${new Date()}: Deciding event noteworthy failed.`);
+            return false;
+        }
+    };
+
     /**
      * Returns the certainty of this event.
      * By certainty we mean how certain we are about our findings (severity) considering this event.
