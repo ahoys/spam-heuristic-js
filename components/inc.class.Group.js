@@ -36,7 +36,7 @@ module.exports = class Group {
                     this.eventsHighlightMap = this.eventsHighlightMap.set(
                         HeuristicEngine.getMapId(
                             this.bufferIndexHighlights,
-                            defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE),
+                            defaultSettings.BUFFER.MAX_EVENT_HIGHLIGHT_MAP_SIZE),
                         {suspect: suspectObj, event: eventObj});
                 }
                 this.eventsMap = this.eventsMap.set(HeuristicEngine.getMapId(

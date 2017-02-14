@@ -32,7 +32,7 @@ module.exports = class Suspect {
                     this.eventsHighlightMap = this.eventsHighlightMap.set(
                         HeuristicEngine.getMapId(
                             this.bufferIndexHighlights,
-                            defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE), eventObj);
+                            defaultSettings.BUFFER.MAX_EVENT_HIGHLIGHT_MAP_SIZE), eventObj);
                     this.violationsValue++;
                 }
                 this.eventsMap = this.eventsMap.set(
