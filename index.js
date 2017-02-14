@@ -40,14 +40,16 @@ module.exports = class HeuristicEngine {
                 let thisEvent, thisSuspect, suspectAnalysis, groupAnalysis;
 
                 // Target analysis ----------------------------
-                thisEvent = new Event(target);
+                thisEvent = new Event(target, this.emphasisJSON);
 
                 // TODO: Use heuristics here for the target.
 
                 // Suspect analysis ---------------------------
                 if (typeof sId in allowedTypes) {
                     // Register an optional suspect.
-                    thisSuspect = this.suspectsMap.has(sId) ? this.suspectsMap.get(sId) : new Suspect(sId);
+                    thisSuspect = this.suspectsMap.has(sId)
+                        ? this.suspectsMap.get(sId)
+                        : new Suspect(sId, this.emphasisJSON);
                     thisSuspect.setSuspectEvent(thisEvent);
                     this.suspectsMap = this.suspectsMap.set(sId, thisSuspect);
                     suspectAnalysis = thisSuspect.getSuspectAnalysis();
@@ -56,7 +58,9 @@ module.exports = class HeuristicEngine {
                 // Group analysis -----------------------------
                 if (typeof gId in allowedTypes && thisSuspect) {
                     // Register an optional group.
-                    const thisGroup = this.groupsMap.has(gId) ? this.groupsMap.get(gId) : new Group(gId);
+                    const thisGroup = this.groupsMap.has(gId)
+                        ? this.groupsMap.get(gId)
+                        : new Group(gId, this.emphasisJSON);
                     thisGroup.setGroupEvent(thisSuspect, thisEvent);
                     this.groupsMap = this.groupsMap.set(gId, thisGroup);
                     groupAnalysis = thisGroup.getGroupAnalysis();

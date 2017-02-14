@@ -73,7 +73,7 @@ module.exports = class Group {
         return this.groupId;
     }
 
-    constructor(groupId) {
+    constructor(groupId, emphasisJSON) {
         this.groupId = groupId;
         this.eventsMap = Immutable.OrderedMap({});
         this.eventsHighlightMap = Immutable.OrderedMap({});

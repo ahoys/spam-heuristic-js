@@ -77,7 +77,7 @@ module.exports = class Event {
         return this.severityValue;
     }
 
-    constructor(target) {
+    constructor(target, emphasisJSON) {
         this.createdValue = new Date().getTime();
         this.certaintyValue = Event.getCertainty(target);
         this.severityValue = Event.getSeverity(target);

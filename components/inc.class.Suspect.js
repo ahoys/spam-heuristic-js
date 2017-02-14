@@ -62,7 +62,7 @@ module.exports = class Suspect {
         return this.suspectId;
     }
 
-    constructor(suspectId) {
+    constructor(suspectId, emphasisJSON) {
         this.suspectId = suspectId;
         this.eventsMap = Immutable.OrderedMap({});
         this.eventsHighlightMap = Immutable.OrderedMap({});
