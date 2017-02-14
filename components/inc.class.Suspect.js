@@ -71,7 +71,7 @@ module.exports = class Suspect {
             certainty: 0,
             severity: 0
         };
-        this.bufferIndexEvents = 0;
-        this.bufferIndexHighlights = 0;
+        this.bufferIndexEvents = -1;
+        this.bufferIndexHighlights = -1;
     }
 };
