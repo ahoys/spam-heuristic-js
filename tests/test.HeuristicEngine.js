@@ -18,3 +18,14 @@ exports.initialize = function (test) {
     test.expect(5);
     test.done();
 };
+
+exports.getMapId = function (test) {
+    const expected = [0, 1, 2, 0, 1];
+    let id = -1;
+    for (let i = 0; i < 5; ++i) {
+        id = Heuristic.getMapId(id, 2);
+        test.equal(id, expected[i]);
+    }
+    test.expect(5);
+    test.done();
+};

@@ -6,6 +6,13 @@ const Immutable = require('immutable');
 
 module.exports = class HeuristicEngine {
 
+    /**
+     * Returns a key for an array or Map.
+     * On the first run you should give -1 as a current index, otherwise your first index will be 1.
+     * @param current
+     * @param max
+     * @returns {number}
+     */
     static getMapId(current, max) {
         try {
             if (typeof current === 'number' && typeof max === 'number') {
