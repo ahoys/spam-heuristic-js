@@ -1,36 +1,9 @@
+const HeuristicEngine = require('../index');
 const Event = require('./inc.class.Event');
 const Immutable = require('immutable');
 const defaultSettings = require('../configs/defaultSettings.json');
 
 module.exports = class Suspect {
-
-    /**
-     * Returns a suitable id for an event or event highlight.
-     * @param type
-     * @returns {number}
-     */
-    static getMapId(type) {
-        try {
-            // Use indexing to make sure the buffer limits are not exceeded.
-            let id = 0;
-            if (type === 'eventsMap') {
-                id = this.bufferIndexEvents;
-                this.bufferIndexEvents = (this.bufferIndexEvents + 1) < defaultSettings.BUFFER.MAX_EVENT_MAP_SIZE
-                    ? this.bufferIndexEvents + 1
-                    : 0;
-            } else if (type === 'eventsHighlightMap') {
-                id = this.bufferIndexHighlights;
-                this.bufferIndexHighlights = (this.bufferIndexHighlights + 1) < defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE
-                    ? this.bufferIndexHighlights + 1
-                    : 0;
-            }
-            return id;
-        } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Returning an id failed.`);
-            return 0;
-        }
-    }
 
     /**
      * Returns a full analysis of a suspect.
@@ -57,10 +30,15 @@ module.exports = class Suspect {
                 if (eventObj.isNoteworthy()) {
                     // A noteworthy event found. Write a record.
                     this.eventsHighlightMap = this.eventsHighlightMap.set(
-                        this.getMapId('eventsHighlightMap'), eventObj);
+                        HeuristicEngine.getMapId(
+                            this.bufferIndexHighlights,
+                            defaultSettings.BUFFER.MAX_EVENT_HISTORY_MAP_SIZE), eventObj);
                     this.violationsValue++;
                 }
-                this.eventsMap = this.eventsMap.set(this.getMapId('eventsMap'), eventObj);
+                this.eventsMap = this.eventsMap.set(
+                    HeuristicEngine.getMapId(
+                        this.bufferIndexEvents,
+                        defaultSettings.BUFFER.MAX_EVENT_MAP_SIZE), eventObj);
             }
         } catch (e) {
             console.log(e.stack);

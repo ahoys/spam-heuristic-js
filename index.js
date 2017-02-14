@@ -6,6 +6,19 @@ const Immutable = require('immutable');
 
 module.exports = class HeuristicEngine {
 
+    static getMapId(current, max) {
+        try {
+            if (typeof current === 'number' && typeof max === 'number') {
+                return current >= max ? 0 : current + 1;
+            }
+            return -1;
+        } catch (e) {
+            console.log(e.stack);
+            console.log(`${new Date()}: Returning an id failed.`);
+            return -1;
+        }
+    }
+
     /**
      * Returns a full analysis of a target string.
      * @param target {string} mandatory
