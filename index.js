@@ -45,7 +45,7 @@ module.exports = class HeuristicEngine {
                 // TODO: Use heuristics here for the target.
 
                 // Suspect analysis ---------------------------
-                if (typeof sId in allowedTypes) {
+                if (allowedTypes.contains(typeof sId)) {
                     // Register an optional suspect.
                     thisSuspect = this.suspectsMap.has(sId)
                         ? this.suspectsMap.get(sId)
@@ -56,7 +56,7 @@ module.exports = class HeuristicEngine {
                 }
 
                 // Group analysis -----------------------------
-                if (typeof gId in allowedTypes && thisSuspect) {
+                if (allowedTypes.contains(typeof gId) && thisSuspect) {
                     // Register an optional group.
                     const thisGroup = this.groupsMap.has(gId)
                         ? this.groupsMap.get(gId)
