@@ -29,3 +29,14 @@ exports.getMapId = function (test) {
     test.expect(5);
     test.done();
 };
+
+exports.getAnalysisWithMsg = function (test) {
+    const heuristicObj = new Heuristic();
+    const actual = heuristicObj.getAnalysis('msg');
+    test.deepEqual(actual, {
+        certainty: 0,
+        severity: 0
+    });
+    test.expect(1);
+    test.done();
+};
