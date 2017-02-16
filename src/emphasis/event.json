@@ -1,0 +1,7 @@
+{
+  "EventMessage": {
+    "heuristicMsgVeryShort": {
+      "str_length_limit": 4
+    }
+  }
+}

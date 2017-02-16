@@ -1,17 +1,36 @@
 const Event = require('./class.Event');
+const Emphasis = require('./emphasis/event.json');
 module.exports = class EventMessage extends Event {
 
-    /**
-     * Returns analysis for an event.
-     * @returns {{certainty: number, severity: number, created: number, isNoteworthy: boolean}}
-     */
-    getAnalysis() {
-        return {
-            certainty: super.certainty,
-            severity: super.severity,
-            created: super.created,
-            isNoteworthy: super.isNoteworthy()
-        };
+    static heuristicMsgVeryShort() {
+        try {
+            return {
+                heuristicIsThreat: this.msgLegth < Emphasis.EventMessage.heuristicMsgVeryShort.str_length_limit,
+                heuristicSeverity: 10 - (10 / this.msgLegth)
+            }
+        } catch (e) {
+            console.log(`Error [EventMessage][heuristicLength]: ${e.message}`);
+        }
+    }
+
+    static heuristicMsgHasShortWords() {
+        return 0;
+    }
+
+    static heuristicMsgHasLongWords() {
+        return 0;
+    }
+
+    static heuristicMsgHasUrls() {
+        return 0;
+    }
+
+    static heuristicMsgHasCode() {
+        return 0;
+    }
+
+    static heuristicMsgHasSpecialLetters() {
+        return 0;
     }
 
     /**
@@ -25,5 +44,8 @@ module.exports = class EventMessage extends Event {
     constructor(msgValue) {
         super();
         this.msgValue = String(msgValue);
+        this.msgLegth = this.msgValue.length;
+        this.msgWords = this.msgValue.split(" ");
+        this.msgWordsCount = this.msgWords.length;
     }
 };
