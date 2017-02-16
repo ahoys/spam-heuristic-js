@@ -11,8 +11,7 @@ module.exports = class Event {
                 this.severityValue >= defaultSettings.EVENT.HIGHLIGHT_SEVERITY_THRESHOLD
             );
         } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Deciding event noteworthy failed.`);
+            console.log(`Error [Event][isNoteworthy]: ${e.message}`);
             return false;
         }
     };
@@ -27,7 +26,7 @@ module.exports = class Event {
         try {
             this.certaintyValue = Number(cValue);
         } catch (e) {
-            console.log(e.stack);
+            console.log(`Error [Event][set certainty]: ${e.message}`);
         }
     };
 
@@ -41,7 +40,7 @@ module.exports = class Event {
         try {
             this.severityValue = Number(sValue);
         } catch (e) {
-            console.log(e.stack);
+            console.log(`Error [Event][set severity]: ${e.message}`);
         }
     };
 
