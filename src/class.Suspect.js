@@ -1,3 +1,6 @@
-/**
- * Created by Raunhofer on 16.2.2017.
- */
+module.exports = class Suspect {
+
+    constructor() {
+
+    }
+};
