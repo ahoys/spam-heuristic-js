@@ -1,7 +1,24 @@
 module.exports = class Event {
 
     /**
-     * Returns the percentage of repetitive chars in a string.
+     * Returns a percentage of small words in a string.
+     * @param words
+     * @param wordCount
+     * @param minWordLength
+     * @returns {number}
+     */
+    static getPercentageOfShortWords(words, wordCount, minWordLength) {
+        try {
+            let count = 0;
+            count = count + words.forEach((word) => {return word.length < minWordLength ? 1 : 0});
+            return (count / wordCount) * 100;
+        } catch (e) {
+            console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
+        }
+    }
+
+    /**
+     * Returns a percentage of repetitive chars in a string.
      * @param str
      * @param length
      * @returns {number}
@@ -24,7 +41,7 @@ module.exports = class Event {
             }
             return (violations / length) * 100;
         } catch (e) {
-            console.log(`Error [EventMessage][getRepetitiveCharsPercentage]: ${e.message}`);
+            console.log(`Error [Event][getRepetitiveCharsPercentage]: ${e.message}`);
         }
     }
 
