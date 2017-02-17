@@ -5,8 +5,8 @@ module.exports = class EventMessage extends Event {
     static heuristicMsgVeryShort() {
         try {
             return {
-                heuristicIsThreat: this.msgLegth < Emphasis.EventMessage.heuristicMsgVeryShort.str_length_limit,
-                heuristicSeverity: 10 - (10 / this.msgLegth)
+                heuristicIsThreat: this.msgLength < Emphasis.EventMessage.heuristicMsgVeryShort.str_length_limit,
+                heuristicSeverity: 10 - (10 / this.msgLength)
             }
         } catch (e) {
             console.log(`Error [EventMessage][heuristicLength]: ${e.message}`);
@@ -44,7 +44,7 @@ module.exports = class EventMessage extends Event {
     constructor(msgValue) {
         super();
         this.msgValue = String(msgValue);
-        this.msgLegth = this.msgValue.length;
+        this.msgLength = this.msgValue.length;
         this.msgWords = this.msgValue.split(" ");
         this.msgWordsCount = this.msgWords.length;
     }
