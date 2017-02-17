@@ -4,17 +4,35 @@ module.exports = class EventMessage extends Event {
 
     static heuristicMsgVeryShort() {
         try {
-            return {
-                heuristicIsThreat: this.msgLength < Emphasis.EventMessage.heuristicMsgVeryShort.str_length_limit,
-                heuristicSeverity: 10 - (10 / this.msgLength)
-            }
+            // Make sure this heuristic is relevant to run.
+            if (this.msgLength > Emphasis.EventMessage.heuristicMsgVeryShort.length_required_for_relevance)
+                return 0;
+            // Return severity based on the length of the message.
+            return 10 - (10 / this.msgLength);
         } catch (e) {
-            console.log(`Error [EventMessage][heuristicLength]: ${e.message}`);
+            console.log(`Error [EventMessage][heuristicMsgVeryShort]: ${e.message}`);
         }
     }
 
     static heuristicMsgHasShortWords() {
-        return 0;
+        try {
+            // Make sure this heuristic is relevant to run.
+            if (
+                this.msgWordsCount <
+                Emphasis.EventMessage.heuristicMsgHasShortWords.words_required_for_relevance
+            ) return 0;
+            // Count of the short words.
+            let count = 0;
+            this.msgWordLengths.forEach((length) => {
+                if (length <= Emphasis.EventMessage.heuristicMsgHasShortWords.short_word_upper_limit) {
+                    count++;
+                }
+            });
+            // Return a percentage of the short words in a message turned into a severity.
+            return (count / this.msgWords) * 10;
+        } catch (e) {
+            console.log(`Error [EventMessage][heuristicMsgHasShortWords]: ${e.message}`);
+        }
     }
 
     static heuristicMsgHasLongWords() {
@@ -47,5 +65,8 @@ module.exports = class EventMessage extends Event {
         this.msgLength = this.msgValue.length;
         this.msgWords = this.msgValue.split(" ");
         this.msgWordsCount = this.msgWords.length;
+        this.msgWordLengths = this.msgWords.map((word) => {
+            return word.length;
+        });
     }
 };
