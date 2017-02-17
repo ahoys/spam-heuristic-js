@@ -66,14 +66,14 @@ module.exports = class Event {
             let prevChar = '';
             let prevCharCount = 0;
             for (let i = 0; i < length; i++) {
-                const char = str[i];
+                const char = String(str[i]);
                 if (char === prevChar) {
                     prevCharCount++;
                     if (prevCharCount > 2) {
                         violations++;
                     }
                 } else {
-                    prevChar = char;
+                    prevChar = String(char);
                 }
             }
             return (violations / length) * 100;
