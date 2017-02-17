@@ -9,6 +9,13 @@ module.exports = class Event {
      */
     static getPercentageOfShortWords(words, wordCount, minWordLength) {
         try {
+            // Validate arguments.
+            if (
+                words.constructor !== Array ||
+                typeof wordCount !== 'number' ||
+                typeof minWordLength !== 'number'
+            ) return 0;
+            // Calculate percentage.
             let count = 0;
             count = count + words.forEach((word) => {return word.length < minWordLength ? 1 : 0});
             return (count / wordCount) * 100;
@@ -25,6 +32,12 @@ module.exports = class Event {
      */
     static getRepetitiveCharsPercentage(str, length) {
         try {
+            // Validate arguments.
+            if (
+                typeof str !== 'string' ||
+                typeof length !== 'number'
+            ) return 0;
+            // Calculate percentage.
             let violations = 0;
             let prevChar = '';
             let prevCharCount = 0;
