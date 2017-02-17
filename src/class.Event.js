@@ -1,6 +1,34 @@
 module.exports = class Event {
 
     /**
+     * Returns the percentage of repetitive chars in a string.
+     * @param str
+     * @param length
+     * @returns {number}
+     */
+    static getRepetitiveCharsPercentage(str, length) {
+        try {
+            let violations = 0;
+            let prevChar = '';
+            let prevCharCount = 0;
+            for (let i = 0; i < length; i++) {
+                const char = str[i];
+                if (char === prevChar) {
+                    prevCharCount++;
+                    if (prevCharCount > 2) {
+                        violations++;
+                    }
+                } else {
+                    prevChar = char;
+                }
+            }
+            return (violations / length) * 100;
+        } catch (e) {
+            console.log(`Error [EventMessage][getRepetitiveCharsPercentage]: ${e.message}`);
+        }
+    }
+
+    /**
      * Returns whether an event is noteworthy.
      * @returns {boolean}
      */
