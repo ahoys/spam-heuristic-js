@@ -2,7 +2,7 @@ const Event = require('./class.Event');
 const Emphasis = require('./emphasis/event.json');
 module.exports = class EventMessage extends Event {
 
-    static heuristicMsgVeryShort() {
+    heuristicMsgVeryShort() {
         try {
             // Make sure this heuristic is relevant to run.
             if (this.msgLength > Emphasis.EventMessage.heuristicMsgVeryShort.length_required_for_relevance)
@@ -14,7 +14,7 @@ module.exports = class EventMessage extends Event {
         }
     }
 
-    static heuristicMsgHasShortWords() {
+    heuristicMsgHasShortWords() {
         try {
             // Make sure this heuristic is relevant to run.
             if (
@@ -35,19 +35,19 @@ module.exports = class EventMessage extends Event {
         }
     }
 
-    static heuristicMsgHasLongWords() {
+    heuristicMsgHasLongWords() {
         return 0;
     }
 
-    static heuristicMsgHasUrls() {
+    heuristicMsgHasUrls() {
         return 0;
     }
 
-    static heuristicMsgHasCode() {
+    heuristicMsgHasCode() {
         return 0;
     }
 
-    static heuristicMsgHasSpecialLetters() {
+    heuristicMsgHasSpecialLetters() {
         return 0;
     }
 
