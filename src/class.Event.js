@@ -1,7 +1,7 @@
 module.exports = class Event {
 
     /**
-     * Returns a percentage of small words in a string.
+     * Returns a percentage of short words in a string.
      * @param words
      * @param wordCount
      * @param minWordLength
@@ -21,6 +21,30 @@ module.exports = class Event {
             return (count / wordCount) * 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
+        }
+    }
+
+    /**
+     * Returns a percentage of long words in a string.
+     * @param words
+     * @param wordCount
+     * @param maxWordLength
+     * @returns {number}
+     */
+    static getPercentageOfLongWords(words, wordCount, maxWordLength) {
+        try {
+            // Validate arguments.
+            if (
+                words.constructor !== Array ||
+                typeof wordCount !== 'number' ||
+                typeof maxWordLength !== 'number'
+            ) return 0;
+            // Calculate percentage.
+            let count = 0;
+            count = count + words.forEach((word) => {return word.length > maxWordLength ? 1 : 0});
+            return (count / wordCount) * 100;
+        } catch (e) {
+            console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
         }
     }
 
