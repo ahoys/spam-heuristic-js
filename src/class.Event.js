@@ -3,24 +3,28 @@ module.exports = class Event {
     /**
      * Returns a percentage of short words in a string.
      * @param words
-     * @param wordCount
      * @param minWordLength
      * @returns {number}
      */
-    static getPercentageOfShortWords(words, wordCount, minWordLength) {
+    static getPercentageOfShortWords(words, minWordLength) {
         try {
             // Validate arguments.
             if (
                 words.constructor !== Array ||
-                typeof wordCount !== 'number' ||
                 typeof minWordLength !== 'number'
             ) return 0;
             // Calculate percentage.
+            const wordCount = words.length;
             let count = 0;
-            count = count + words.forEach((word) => {return word.length < minWordLength ? 1 : 0});
-            return (count / wordCount) * 100;
+            words.forEach((word) => {
+                if (typeof word === 'string' && word.length < minWordLength) {
+                    count++;
+                }
+            });
+            return Math.round((count / wordCount) * 100);
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
+            return 0;
         }
     }
 
@@ -42,9 +46,10 @@ module.exports = class Event {
             // Calculate percentage.
             let count = 0;
             count = count + words.forEach((word) => {return word.length > maxWordLength ? 1 : 0});
-            return (count / wordCount) * 100;
+            return Math.round((count / wordCount) * 100);
         } catch (e) {
             console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
+            return 0;
         }
     }
 
@@ -76,9 +81,10 @@ module.exports = class Event {
                     prevChar = String(char);
                 }
             }
-            return (violations / length) * 100;
+            return Math.round((violations / length) * 100);
         } catch (e) {
             console.log(`Error [Event][getRepetitiveCharsPercentage]: ${e.message}`);
+            return 0;
         }
     }
 
