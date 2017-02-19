@@ -9,10 +9,7 @@ module.exports = class Event {
     static getPercentageOfShortWords(words, minWordLength) {
         try {
             // Validate arguments.
-            if (
-                words.constructor !== Array ||
-                typeof minWordLength !== 'number'
-            ) return 0;
+            if (words.constructor !== Array || typeof minWordLength !== 'number') return 0;
             // Calculate percentage.
             const wordCount = words.length;
             let count = 0;
@@ -31,22 +28,17 @@ module.exports = class Event {
     /**
      * Returns a percentage of long words in a string.
      * @param words
-     * @param wordCount
      * @param maxWordLength
      * @returns {number}
      */
-    static getPercentageOfLongWords(words, wordCount, maxWordLength) {
+    static getPercentageOfLongWords(words, maxWordLength) {
         try {
             // Validate arguments.
-            if (
-                words.constructor !== Array ||
-                typeof wordCount !== 'number' ||
-                typeof maxWordLength !== 'number'
-            ) return 0;
+            if (words.constructor !== Array || typeof maxWordLength !== 'number') return 0;
             // Calculate percentage.
             let count = 0;
             count = count + words.forEach((word) => {return word.length > maxWordLength ? 1 : 0});
-            return Math.round((count / wordCount) * 100);
+            return Math.round((count / wordCount.length) * 100);
         } catch (e) {
             console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
             return 0;
@@ -56,21 +48,17 @@ module.exports = class Event {
     /**
      * Returns a percentage of repetitive chars in a string.
      * @param str
-     * @param length
      * @returns {number}
      */
-    static getRepetitiveCharsPercentage(str, length) {
+    static getRepetitiveCharsPercentage(str) {
         try {
             // Validate arguments.
-            if (
-                typeof str !== 'string' ||
-                typeof length !== 'number'
-            ) return 0;
+            if (typeof str !== 'string') return 0;
             // Calculate percentage.
             let violations = 0;
             let prevChar = '';
             let prevCharCount = 0;
-            for (let i = 0; i < length; i++) {
+            for (let i = 0; i < str.length; i++) {
                 const char = String(str[i]);
                 if (char === prevChar) {
                     prevCharCount++;
@@ -81,7 +69,7 @@ module.exports = class Event {
                     prevChar = String(char);
                 }
             }
-            return Math.round((violations / length) * 100);
+            return Math.round((violations / str.length) * 100);
         } catch (e) {
             console.log(`Error [Event][getRepetitiveCharsPercentage]: ${e.message}`);
             return 0;
