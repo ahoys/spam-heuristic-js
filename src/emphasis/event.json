@@ -1,13 +1,6 @@
 {
   "EventMessage": {
-    "heuristicMsgVeryShort": {
-      "length_required_for_relevance": 4,
-      "str_length_limit": 4
-    },
-    "heuristicMsgHasShortWords": {
-      "words_required_for_relevance": 0,
-      "threat_limit": 0.8,
-      "short_word_upper_limit": 4
-    }
+    "short_word_limit": 4,
+    "long_word_limit": 16
   }
 }
