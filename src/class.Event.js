@@ -100,7 +100,9 @@ module.exports = class Event {
      */
     set certainty(cValue) {
         try {
-            this.certaintyValue = Number(cValue);
+            if (cValue > 100) this.certaintyValue = 100;
+            if (cValue < 0) this.certaintyValue = 0;
+            this.certaintyValue = Math.round(Number(cValue));
         } catch (e) {
             console.log(`Error [Event][set certainty]: ${e.message}`);
         }
@@ -114,7 +116,9 @@ module.exports = class Event {
      */
     set severity(sValue) {
         try {
-            this.severityValue = Number(sValue);
+            if (sValue > 10) this.severityValue = 10;
+            if (sValue < 0) this.severityValue = 0;
+            this.severityValue = Math.round(Number(sValue));
         } catch (e) {
             console.log(`Error [Event][set severity]: ${e.message}`);
         }
