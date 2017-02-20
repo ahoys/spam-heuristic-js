@@ -14,13 +14,19 @@ module.exports = class EventMessage extends Event {
         super();
         this.msgValue = String(msgValue);
         this.msgWords = this.msgValue.split(" ");
-
         // Run heuristics for the value.
-        this.shortWordsPercentage = super.getPercentageOfShortWords(
-            this.msgWords, Emphasis.EventMessage.short_word_limit);
-        this.longWordsPercentage = super.getPercentageOfLongWords(
-            this.msgWords, Emphasis.EventMessage.long_word_limit);
-        this.repetitiveCharsPercentage = super.getRepetitiveCharsPercentage(
-            this.msgValue);
+        const heuristicPercentages = [];
+        heuristicPercentages.push(super.getPercentageOfShortWords(
+            this.msgWords, Emphasis.EventMessage.short_word_limit));
+        heuristicPercentages.push(super.getPercentageOfLongWords(
+            this.msgWords, Emphasis.EventMessage.long_word_limit));
+        heuristicPercentages.push(super.getRepetitiveCharsPercentage(
+            this.msgValue));
+        // Analyse the results.
+        let heuristicSum = 0;
+        heuristicPercentages.forEach((result) => {
+            heuristicSum = heuristicSum + result;
+        });
+        const severity = heuristicSum / heuristicPercentages.length;
     }
 };
