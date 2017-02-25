@@ -21,4 +21,4 @@ exports.initialize = function (test) {
     test.equal(severity, 0);
     test.expect(3);
     test.done();
-};§
+};
