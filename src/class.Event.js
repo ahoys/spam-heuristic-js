@@ -37,8 +37,12 @@ module.exports = class Event {
             if (words.constructor !== Array || typeof maxWordLength !== 'number') return 0;
             // Calculate percentage.
             let count = 0;
-            count = count + words.forEach((word) => {return word.length > maxWordLength ? 1 : 0});
-            return Math.round((count / wordCount.length) * 100);
+            words.forEach((word) => {
+                if (typeof word === 'string' && word.length > maxWordLength) {
+                    count++;
+                }
+            });
+            return Math.round((count / words.length) * 100);
         } catch (e) {
             console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
             return 0;

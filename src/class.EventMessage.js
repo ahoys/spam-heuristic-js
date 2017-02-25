@@ -6,7 +6,7 @@ module.exports = class EventMessage extends Event {
      * Returns the message associated with the instance.
      * @returns {string}
      */
-    get msg() {
+    get message() {
         return String(this.msgValue);
     }
 
@@ -17,11 +17,11 @@ module.exports = class EventMessage extends Event {
 
         // Run heuristics for the value.
         const heuristicPercentages = [];
-        heuristicPercentages.push(super.getPercentageOfShortWords(
+        heuristicPercentages.push(Event.getPercentageOfShortWords(
             this.msgWords, Emphasis.EventMessage.short_word_limit));
-        heuristicPercentages.push(super.getPercentageOfLongWords(
+        heuristicPercentages.push(Event.getPercentageOfLongWords(
             this.msgWords, Emphasis.EventMessage.long_word_limit));
-        heuristicPercentages.push(super.getRepetitiveCharsPercentage(
+        heuristicPercentages.push(Event.getRepetitiveCharsPercentage(
             this.msgValue));
 
         // Analyse the results.
