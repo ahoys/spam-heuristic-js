@@ -5,27 +5,30 @@ const Immutable = require('immutable');
 module.exports = class Group {
 
     /**
-     * Returns how many of the events in a groups recent history has
+     * Returns percentage of events in a group's recent history that has
      * been violating events (regular spam with variation).
+     * @param groupObj
      */
-    static getPercentageOfPreviousViolatingEvents(events, maxDelay) {
+    static getPercentageOfViolatingEvents(groupObj) {
         try {
             return 0;
         } catch (e) {
-            console.log(`Error [Group][getPercentageOfPreviousViolatingEvents]: ${e.message}`);
+            console.log(`Error [Group][getPercentageOfViolatingEvents]: ${e.message}`);
             return 0;
         }
     }
 
     /**
-     * Returns how many of the events in a groups recent history has
+     * Returns percentage of events in a group's recent history that has
      * been identical events (regular spam).
+     * @param groupObj
+     * @param eventObj
      */
-    static getPercentageOfPreviousIdenticalEvents(events, maxDelay) {
+    static getPercentageOfIdenticalEvents(groupObj, eventObj) {
         try {
             return 0;
         } catch (e) {
-            console.log(`Error [Group][getPercentageOfPreviousIdenticalEvents]: ${e.message}`);
+            console.log(`Error [Group][getPercentageOfIdenticalEvents]: ${e.message}`);
             return 0;
         }
     }
@@ -38,36 +41,38 @@ module.exports = class Group {
      */
     setRecord(sId, eventFrame) {
         try {
-            // Validate arguments.
-            const validFrames = ['string'];
             if (
-                typeof sId !== 'string' ||
-                !validFrames.includes(typeof eventFrame)
-            ) return;
+                ['string', 'number'].includes(typeof sId) &&
+                ['string'].includes(typeof eventFrame)
+            ) {
+                // Keep track of the suspects.
+                // There will be only one suspect with a distinct id.
+                if (!this._suspectsMap.has(sId)) {
+                    this._suspectsMap = this._suspectsMap.set(
+                        sId,
+                        new Suspect(sId)
+                    );
+                }
 
-            // Keep track of the suspects.
-            if (!this._suspectsMap.has(sId)) {
-                this._suspectsMap = this._suspectsMap.set(
-                    sId,
-                    new Suspect(sId)
-                );
-            }
+                // Construct a new event.
+                // Events are always new.
+                let thisEvent;
+                if (typeof eventFrame === 'string') {
+                    thisEvent = new EventMessage(eventFrame);
+                }
 
-            // Construct a new event.
-            let thisEvent;
-            if (typeof eventFrame === 'string') {
-                thisEvent = new EventMessage(eventFrame);
-            }
-
-            // Make a record.
-            if (typeof thisEvent === 'object') {
-                this._recordsMap = this._recordsMap.set(
-                    Core.getMapId(this._recordsMapId, 128),
-                    {
-                        suspect: this._suspectsMap.get(sId),
-                        event: thisEvent
-                    }
-                );
+                // Make a record.
+                // A records holds the suspect id who triggered the event and
+                // the event itself.
+                if (typeof thisEvent === 'object') {
+                    this._recordsMap = this._recordsMap.set(
+                        Core.getMapId(this._recordsMapId, 128),
+                        {
+                            suspect: sId,
+                            event: thisEvent
+                        }
+                    );
+                }
             }
         } catch (e) {
             console.log(`Error [Group][setRecord]: ${e.message}`);
