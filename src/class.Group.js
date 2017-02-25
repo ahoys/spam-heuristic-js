@@ -1,5 +1,6 @@
 const Core = require('../index');
 const Suspect = require('./class.Suspect');
+const Event = require('./class.Event');
 const EventMessage = require('./class.EventMessage');
 const Immutable = require('immutable');
 module.exports = class Group {
@@ -11,6 +12,13 @@ module.exports = class Group {
      */
     static getPercentageOfViolatingEvents(groupObj) {
         try {
+            if (groupObj instanceof Group) {
+                let violationC = 0;
+                groupObj._recordsMap.forEach((record) => {
+                    if (record.isNoteworthy()) violationC++;
+                });
+                return Math.round((violationC / groupObj._recordsMap.size) * 100);
+            }
             return 0;
         } catch (e) {
             console.log(`Error [Group][getPercentageOfViolatingEvents]: ${e.message}`);
@@ -20,13 +28,26 @@ module.exports = class Group {
 
     /**
      * Returns percentage of events in a group's recent history that has
-     * been identical events (regular spam).
+     * been identical events (regular spam). Do note that the suspects may vary.
      * @param groupObj
      * @param eventObj
      */
     static getPercentageOfIdenticalEvents(groupObj, eventObj) {
         try {
-            return 0;
+            if (groupObj instanceof Group && eventObj instanceof Event) {
+                const eventType = eventObj.constructor.name;
+                let identicalC = 0;
+                groupObj._recordsMap.forEach((record) => {
+                    const eventRecord = record.event;
+                    if (eventRecord.constructor.name === eventType) {
+                        if (
+                            eventType === 'eventMessage' &&
+                            eventRecord.message === eventObj.message
+                        ) identicalC++;
+                    }
+                });
+                return Math.round((identicalC / groupObj._recordsMap.size) * 100);
+            }
         } catch (e) {
             console.log(`Error [Group][getPercentageOfIdenticalEvents]: ${e.message}`);
             return 0;
