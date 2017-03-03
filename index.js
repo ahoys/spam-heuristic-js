@@ -1,143 +1,80 @@
 const defaultEmphasis = require('./configs/defaultEmphasis.json');
-const Event = require('./components/inc.class.Event');
-const Suspect = require('./components/inc.class.Suspect');
-const Group = require('./components/inc.class.Group');
+const Group = require('./src/class.Group');
 const Immutable = require('immutable');
 
-module.exports = class HeuristicEngine {
+module.exports = class HeuristicEnsemble {
 
     /**
-     * Returns a key for an array or Map.
-     * On the first run you should give -1 as a current index, otherwise your first index will be 1.
-     * @param current
-     * @param max
+     * Returns a suitable next key for an array or a map.
+     * On the first run you should give -1 as a currentKey as otherwise your first index will be 1.
+     * @param currentKey
+     * @param maxKey
      * @returns {number}
      */
-    static getMapId(current, max) {
+    static getMapId(currentKey, maxKey) {
         try {
-            if (typeof current === 'number' && typeof max === 'number') {
-                return current >= max ? 0 : current + 1;
+            if (typeof currentKey === 'number' && typeof maxKey === 'number') {
+                return currentKey < maxKey ? currentKey + 1 : 0 ;
             }
+            console.log(`Error [HeuristicEnsemble][getMapId]: Invalid key format.`);
             return -1;
         } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Returning an id failed.`);
+            console.log(`Error [HeuristicEnsemble][getMapId]: ${e.message}`);
             return -1;
         }
     }
 
     /**
-     * Returns a full analysis of a target string.
-     * @param target {string} mandatory
-     * @param sId {number} optional
-     * @param gId {number} optional
-     * @returns {{certainty: number, severity: number}}
+     * Returns true if the given arguments are valid.
+     * @param arguments
+     * @param allowedTypes
+     * @returns {boolean}
      */
-    getAnalysis(target, sId, gId) {
+    static validArguments(arguments, allowedTypes) {
+        if (
+            arguments.constructor !== Array ||
+            allowedTypes.constructor !== Array
+        ) return false;
+        arguments.forEach((argument) => {
+            if (!allowedTypes.includes(typeof argument)) return false;
+        });
+        return true;
+    }
+
+    /**
+     * Returns an analysis for an event of a suspect of a group.
+     * This is the main method of using this module.
+     * @param gId
+     * @param sId
+     * @param event
+     * @returns {*}
+     */
+    getAnalysis(gId, sId, event) {
         try {
-            if (typeof target === 'string') {
-                const allowedTypes = ['string', 'number'];
-                let thisEvent, thisSuspect, suspectAnalysis, groupAnalysis;
+            // Validate input.
+            if (!this.constructor.validArguments([gId, sId, event], ['string', 'number'])) return {};
 
-                // Target analysis ----------------------------
-                thisEvent = new Event(target, this.emphasisJSON);
+            // Initialize a group.
+            const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this._emphasis);
 
-                // TODO: Use heuristics here for the target.
+            // Process the event.
+            groupObj.setRecord(sId, event);
 
-                // Suspect analysis ---------------------------
-                if (allowedTypes.includes(typeof sId)) {
-                    // Register an optional suspect.
-                    thisSuspect = this.suspectsMap.has(sId)
-                        ? this.suspectsMap.get(sId)
-                        : new Suspect(sId, this.emphasisJSON);
-                    thisSuspect.setSuspectEvent(thisEvent);
-                    this.suspectsMap = this.suspectsMap.set(sId, thisSuspect);
-                    suspectAnalysis = thisSuspect.getSuspectAnalysis();
-                }
+            // Save the results.
+            this._groupsMap = this._groupsMap.set(gId, groupObj);
 
-                // Group analysis -----------------------------
-                if (allowedTypes.includes(typeof gId) && thisSuspect) {
-                    // Register an optional group.
-                    const thisGroup = this.groupsMap.has(gId)
-                        ? this.groupsMap.get(gId)
-                        : new Group(gId, this.emphasisJSON);
-                    thisGroup.setGroupEvent(thisSuspect, thisEvent);
-                    this.groupsMap = this.groupsMap.set(gId, thisGroup);
-                    groupAnalysis = thisGroup.getGroupAnalysis();
-                }
-
-                // Combine results ----------------------------
-                // TODO: Use heuristics to combine results.
-                return this.defaultReturn;
-            }
-            return this.defaultReturn;
+            // Return a suspect analysis.
+            return groupObj.getSuspectAnalysis(sId);
         } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Returning analysis failed.`);
-            return this.defaultReturn;
-        }
-    }
-
-    /**
-     * Returns the emphasis.
-     * @returns {object}
-     */
-    get emphasis() {
-        return this.emphasisJSON;
-    }
-
-    /**
-     * Returns all suspects in an immutable map.
-     * @returns {Map}
-     */
-    get suspects() {
-        return this.suspectsMap;
-    }
-
-    /**
-     * Returns all groups in an immutable map.
-     * @returns {Map}
-     */
-    get groups() {
-        return this.groupsMap;
-    }
-
-    /**
-     * Sets an emphasis for the heuristics.
-     * Emphasis includes severity values for different heuristics, it will basically tell
-     * how serious some distinct form of spam is.
-     * @param userEmphasis
-     */
-    static getProcessedEmphasis(userEmphasis) {
-        try {
-            return userEmphasis !== undefined
-                ? JSON.parse(userEmphasis)
-                    ? userEmphasis
-                    : defaultEmphasis
-                : defaultEmphasis;
-        } catch (e) {
-            console.log(e.stack);
-            console.log(`${new Date()}: Failed to process the emphasis.`);
-            return defaultEmphasis;
+            console.log(`Error [HeuristicEnsemble][getAnalysis]: ${e.message}`);
+            return {};
         }
     };
 
-    constructor(userEmphasis) {
-        this.emphasisJSON = this.constructor.getProcessedEmphasis(userEmphasis);
-        this.suspectsMap = Immutable.Map({});
-        this.groupsMap = Immutable.Map({});
-        this.defaultReturn = {
-            certainty: 0,
-            severity: 0
-        }
-    };
+    constructor(_emphasis) {
+        this._emphasis = !!JSON.parse(_emphasis)
+            ? _emphasis
+            : defaultEmphasis;
+        this._groupsMap = Immutable.Map({});
+    }
 };
-
-/*
-
- Idea of usage:
-
- const Heuristics = new Heuristics(emphasis);
- const results = Heuristics.getAnalysis(msg, suspectId, groupId);
-
- */

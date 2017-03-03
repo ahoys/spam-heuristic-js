@@ -55,6 +55,26 @@ module.exports = class Group {
     }
 
     /**
+     * Returns a group level analysis for a suspect.
+     * @param sId
+     * @returns {{certainty: number, severity: number, violations: number}|*}
+     */
+    getSuspectAnalysis(sId) {
+        try {
+            const suspectObj = this._suspectsMap.has(sId)
+                ? this._suspectsMap.get(sId)
+                : undefined;
+            if (suspectObj) {
+                // An existing suspect.
+            }
+            return {};
+        } catch (e) {
+            console.log(`Error [Group][getSuspectAnalysis]: ${e.message}`);
+            return {};
+        }
+    }
+
+    /**
      * Sets a new record.
      * A record is a combination of a suspect and an event.
      * @param sId
@@ -104,8 +124,9 @@ module.exports = class Group {
         return this._id;
     }
 
-    constructor(_id) {
+    constructor(_id, _emphasis) {
         this._id = _id;
+        this._emphasis = _emphasis;
         this._recordsMap = Immutable.OrderedMap({});
         this._recordsMapId = -1;
         this._suspectsMap = Immutable.Map({});
