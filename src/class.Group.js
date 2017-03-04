@@ -84,6 +84,7 @@ module.exports = class Group {
         try {
             // Validate input.
             if (!Ensemble.isValidType([sId, eventFrame], [['string', 'number'], ['object']])) return;
+            if (!Ensemble.isValidType([eventFrame.type, eventFrame.value], [['string'], ['string', 'number']])) return;
 
             // Register distinct suspects.
             if (!this.suspectsMap.has(sId)) {

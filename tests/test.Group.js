@@ -5,7 +5,7 @@ const Immutable = require('immutable');
 
 const gId0 = 'g123';
 const sId0 = 's123';
-const eventMessage0 = 'msg 123 ! " / 3';
+const eventMessage0 = {type: 'eventMessage', value: 'msg 123 ! " / 3'};
 
 // Tests --------------------------------------
 
@@ -21,7 +21,7 @@ exports.setRecord = function (test) {
 
     // Records testing.
     actual = groupObj.records;
-    test.deepEqual(actual.get(0).suspect, sId0, '1');
+    test.deepEqual(actual.get(0).sId, sId0, '1');
 
     // Suspects testing.
     actual = groupObj.suspects;
