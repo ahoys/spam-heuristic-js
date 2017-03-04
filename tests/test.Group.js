@@ -6,8 +6,31 @@ const Immutable = require('immutable');
 const gId0 = 'g123';
 const sId0 = 's123';
 const sId1 = 321;
-const eventMessage0 = {type: 'eventMessage', value: 'msg 123 ! " / 3'};
-const eventMessage1 = {type: 'eventMessage', value: 'repeat repeat repeat repeat repeat repeat repeat repeat'};
+const messages_ok = [
+    "Whatsup?",
+    "That's cool.",
+    "what else?",
+    "neat.",
+    "Gonna play something?",
+    "k",
+    "I'm gonna eat first, brb...",
+    "Back. Lets go."
+];
+const messages_fail = [
+    "spam spam spam spam spam spam spam spam spam",
+    "I'M THAT VERY LOUD GUY WHO WRITES EVERYTHING WITH CAPS LOCK ON. YOU KNOW?",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!",
+    "aaaaaAAAAAAAAAAAAaaaAAAaaAAAAAAAAAAAAAaaAAAAaaaaaaaaaaaaaaaaaAAAaaaaaa!",
+    " ",
+    "repeat",
+    "repeat",
+    "repeat",
+    "repeat",
+    "I'm trying to fool the system",
+    "Talking normally",
+    "Then some advertising: http://strangesite.ru/ BUY NOW!",
+    "Then I just act like everything were ok."
+];
 
 // Tests --------------------------------------
 
@@ -17,7 +40,7 @@ exports.setRecord = function (test) {
     let actual = groupObj.id;
     test.equal(actual, gId0, '0');
 
-    groupObj.setRecord(sId0, eventMessage0);
+    groupObj.setRecord(sId0, {type: 'eventMessage', value: messages_ok[0]});
 
     // Records testing.
     actual = groupObj.records;
@@ -27,8 +50,8 @@ exports.setRecord = function (test) {
     actual = groupObj.suspects;
     test.equal(actual.get(sId0).id, sId0, '2');
 
-    groupObj.setRecord(sId0, eventMessage1);
-    groupObj.setRecord(sId1, eventMessage0);
+    groupObj.setRecord(sId0, {type: 'eventMessage', value: messages_ok[1]});
+    groupObj.setRecord(sId1, {type: 'eventMessage', value: messages_ok[2]});
 
     actual = groupObj.records;
     test.equal(actual.size, 3, '3');
@@ -45,12 +68,20 @@ exports.setRecord = function (test) {
 exports.getSuspectAnalysis = function (test) {
     const groupObj = new Group(gId0);
 
-    groupObj.setRecord(sId0, eventMessage0);
-    groupObj.setRecord(sId0, eventMessage1);
+    messages_ok.forEach((message) => {
+        groupObj.setRecord(sId0, {type: 'eventMessage', value: message});
+    });
+
+    messages_fail.forEach((message) => {
+        groupObj.setRecord(sId1, {type: 'eventMessage', value: message});
+    });
 
     let actual = groupObj.getSuspectAnalysis(sId0);
     test.deepEqual(actual, {}, '0');
 
-    test.expect(1);
+    actual = groupObj.getSuspectAnalysis(sId1);
+    test.deepEqual(actual, {}, '1');
+
+    test.expect(2);
     test.done();
 };

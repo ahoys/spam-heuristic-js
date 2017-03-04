@@ -1,4 +1,3 @@
-const defaultEmphasis = require('./configs/defaultEmphasis.json');
 const Group = require('./src/class.Group');
 const Immutable = require('immutable');
 
@@ -89,10 +88,7 @@ module.exports = class Ensemble {
         }
     };
 
-    constructor(emphasis) {
-        this.emphasis = !!JSON.parse(emphasis)
-            ? emphasis
-            : defaultEmphasis;
+    constructor() {
         this._groupsMap = Immutable.Map({});
     }
 };

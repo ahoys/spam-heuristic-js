@@ -1,6 +1,7 @@
 const Ensemble = require('../index');
 const Suspect = require('./class.Suspect');
 const EventMessage = require('./class.EventMessage');
+const defaultEmphasis = require('../configs/defaultEmphasis.json');
 const Immutable = require('immutable');
 module.exports = class Group {
 
@@ -100,8 +101,8 @@ module.exports = class Group {
                     // We now have results for a long term analysis and a short term analysis.
                     // Results are average of the two analysis.
                     return {
-                        certainty: (avgCertainty + avgShortCertainty) / 2,
-                        severity: maxSeverity
+                        certainty: Math.round((avgCertainty + avgShortCertainty) / 2),
+                        severity: Math.round(maxSeverity)
                     };
                 }
             }
@@ -191,9 +192,14 @@ module.exports = class Group {
 
     constructor(idValue, emphasisValue) {
         this.idValue = idValue;
-        this.emphasisValue = emphasisValue;             // Emphasis used in the heuristics.
-        this.recordsMap = Immutable.OrderedMap({});     // All events as records of suspect id, event and time.
+        // Emphasis used in the heuristics.
+        this.emphasisValue = emphasisValue !== undefined && !!JSON.parse(emphasisValue)
+            ? emphasisValue
+            : defaultEmphasis;
+        // All events as records of suspect id, event and time.
+        this.recordsMap = Immutable.OrderedMap({});
         this.recordsMapId = -1;
-        this.suspectsMap = Immutable.Map({});           // Every distinct suspect a group has.
+        // Every distinct suspect a group has.
+        this.suspectsMap = Immutable.Map({});
     }
 };
