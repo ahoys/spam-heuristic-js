@@ -1,4 +1,4 @@
-const Core = require('../index');
+const Ensemble = require('../index');
 const Suspect = require('./class.Suspect');
 const Event = require('./class.Event');
 const EventMessage = require('./class.EventMessage');
@@ -107,7 +107,7 @@ module.exports = class Group {
                 // the event itself.
                 if (typeof thisEvent === 'object') {
                     this._recordsMap = this._recordsMap.set(
-                        Core.getMapId(this._recordsMapId, 128),
+                        Ensemble.getMapId(this._recordsMapId, 128),
                         {
                             suspect: sId,
                             event: thisEvent

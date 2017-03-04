@@ -2,7 +2,7 @@ const defaultEmphasis = require('./configs/defaultEmphasis.json');
 const Group = require('./src/class.Group');
 const Immutable = require('immutable');
 
-module.exports = class HeuristicEnsemble {
+module.exports = class Ensemble {
 
     /**
      * Returns a suitable next key for an array or a map.

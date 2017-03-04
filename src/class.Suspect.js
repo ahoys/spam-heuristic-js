@@ -1,4 +1,4 @@
-const Core = require('../index');
+const Ensemble = require('../index');
 const Immutable = require('immutable');
 module.exports = class Suspect {
 
@@ -8,7 +8,7 @@ module.exports = class Suspect {
             if (typeof eventObj !== 'object') return;
             // Save violation to a map.
             this._violations = this._violations.set(
-                Core.getMapId(this._violationsId, 8),
+                Ensemble.getMapId(this._violationsId, 8),
                 eventObj
             );
         } catch (e) {
