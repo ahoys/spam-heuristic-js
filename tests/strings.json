@@ -1,0 +1,37 @@
+{
+  "group_ids": [
+    "group_id_987",
+    "group_id_876",
+    765
+  ],
+  "user_ids": [
+    "user_id_123",
+    "user_id_234",
+    345
+  ],
+  "messages_ok_0": [
+    "Whatsup?",
+    "That's cool.",
+    "what else?",
+    "neat.",
+    "Gonna play something?",
+    "k",
+    "I'm gonna eat first, brb...",
+    "Back. Lets go."
+  ],
+  "messages_fail_0": [
+    "spam spam spam spam spam spam spam spam spam",
+    "I'M THAT VERY LOUD GUY WHO WRITES EVERYTHING WITH CAPS LOCK ON. YOU KNOW?",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!",
+    "aaaaaAAAAAAAAAAAAaaaAAAaaAAAAAAAAAAAAAaaAAAAaaaaaaaaaaaaaaaaaAAAaaaaaa!",
+    " ",
+    "repeat",
+    "repeat",
+    "repeat",
+    "repeat",
+    "I'm trying to fool the system",
+    "Talking normally",
+    "Then some advertising: http://strangesite.ru/ BUY NOW!",
+    "Then I just act like everything were ok."
+  ]
+}
