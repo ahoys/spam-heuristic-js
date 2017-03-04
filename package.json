@@ -1,16 +1,16 @@
 {
   "name": "spam-heuristic-js",
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "0.0.1",
   "license": "MIT",
-  "description": "Detects spam from messages.",
+  "description": "A rudimentary spam evaluator.",
   "author": {
     "name": "Ari Höysniemi",
     "url": "https://github.com/ahoys"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ahoys/spam-detect-js.git"
+    "url": "git://github.com/ahoys/spam-heuristic-js.git"
   },
   "dependencies" :{
     "immutable": "~3.8.1"
