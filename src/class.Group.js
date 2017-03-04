@@ -14,10 +14,10 @@ module.exports = class Group {
         try {
             if (groupObj instanceof Group) {
                 let violationC = 0;
-                groupObj._recordsMap.forEach((record) => {
+                groupObj.recordsMap.forEach((record) => {
                     if (record.isNoteworthy()) violationC++;
                 });
-                return Math.round((violationC / groupObj._recordsMap.size) * 100);
+                return Math.round((violationC / groupObj.recordsMap.size) * 100);
             }
             return 0;
         } catch (e) {
@@ -37,7 +37,7 @@ module.exports = class Group {
             if (groupObj instanceof Group && eventObj instanceof Event) {
                 const eventType = eventObj.constructor.name;
                 let identicalC = 0;
-                groupObj._recordsMap.forEach((record) => {
+                groupObj.recordsMap.forEach((record) => {
                     const eventRecord = record.event;
                     if (eventRecord.constructor.name === eventType) {
                         if (
@@ -46,7 +46,7 @@ module.exports = class Group {
                         ) identicalC++;
                     }
                 });
-                return Math.round((identicalC / groupObj._recordsMap.size) * 100);
+                return Math.round((identicalC / groupObj.recordsMap.size) * 100);
             }
         } catch (e) {
             console.log(`Error [Group][getPercentageOfIdenticalEvents]: ${e.message}`);
@@ -61,8 +61,8 @@ module.exports = class Group {
      */
     getSuspectAnalysis(sId) {
         try {
-            const suspectObj = this._suspectsMap.has(sId)
-                ? this._suspectsMap.get(sId)
+            const suspectObj = this.suspectsMap.has(sId)
+                ? this.suspectsMap.get(sId)
                 : undefined;
             if (suspectObj) {
                 // An existing suspect.
@@ -75,68 +75,83 @@ module.exports = class Group {
     }
 
     /**
-     * Sets a new record.
-     * A record is a combination of a suspect and an event.
+     * Sets a new record for Group.
+     * A record is a combination of suspect's id, Event and time of the event.
      * @param sId
      * @param eventFrame
      */
     setRecord(sId, eventFrame) {
         try {
-            if (
-                ['string', 'number'].includes(typeof sId) &&
-                ['string'].includes(typeof eventFrame)
-            ) {
-                // Keep track of the suspects.
-                // There will be only one suspect with a distinct id.
-                if (!this._suspectsMap.has(sId)) {
-                    this._suspectsMap = this._suspectsMap.set(
-                        sId,
-                        new Suspect(sId)
-                    );
-                }
+            // Validate input.
+            if (!Ensemble.isValidType([sId, eventFrame], [['string', 'number'], ['object']])) return;
 
-                // Construct a new event.
-                // Events are always new.
-                let thisEvent;
-                if (typeof eventFrame === 'string') {
-                    thisEvent = new EventMessage(eventFrame);
-                }
+            // Register distinct suspects.
+            if (!this.suspectsMap.has(sId)) {
+                this.suspectsMap = this.suspectsMap.set(sId, new Suspect(sId));
+            }
 
-                // Make a record.
-                // A records holds the suspect id who triggered the event and
-                // the event itself.
-                if (typeof thisEvent === 'object') {
-                    this._recordsMap = this._recordsMap.set(
-                        Ensemble.getMapId(this._recordsMapId, 128),
-                        {
-                            suspect: sId,
-                            event: thisEvent
-                        }
-                    );
-                }
+            // Create an event based on the eventFrame.
+            // Events are always new.
+            let thisEvent;
+            if (eventFrame.type === 'eventMessage') {
+                // EventMessage
+                thisEvent = new EventMessage(eventFrame.value);
+            }
+
+            if (thisEvent) {
+                this.recordsMapId = Ensemble.getMapId(this.recordsMapId, 128);
+                this.recordsMap = this.recordsMap.set(
+                    this.recordsMapId,
+                    {
+                        sId: sId,
+                        eventObj: thisEvent,
+                        time: new Date().getTime()
+                    }
+                );
             }
         } catch (e) {
             console.log(`Error [Group][setRecord]: ${e.message}`);
         }
     }
 
+    /**
+     * Returns identification of Group.
+     * @returns {*}
+     */
     get id() {
-        return this._id;
+        return this.idValue;
     }
 
+    /**
+     * Returns emphasis used by Group.
+     * @returns {*}
+     */
+    get emphasis() {
+        return this.emphasisValue;
+    }
+
+    /**
+     * Returns all records of events Group has.
+     * Do note: only a limited amount of records are stored at once.
+     * @returns {Map} immutable
+     */
     get records() {
-        return this._recordsMap;
+        return this.recordsMap;
     }
 
+    /**
+     * Returns all distinct suspects Group has.
+     * @returns {Map} immutable
+     */
     get suspects() {
-        return this._suspectsMap;
+        return this.suspectsMap;
     }
 
-    constructor(_id, _emphasis) {
-        this._id = _id;
-        this._emphasis = _emphasis;
-        this._recordsMap = Immutable.OrderedMap({});
-        this._recordsMapId = -1;
-        this._suspectsMap = Immutable.Map({});
+    constructor(idValue, emphasisValue) {
+        this.idValue = idValue;
+        this.emphasisValue = emphasisValue;             // Emphasis used in the heuristics.
+        this.recordsMap = Immutable.OrderedMap({});     // All events as records of suspect id, event and time.
+        this.recordsMapId = -1;
+        this.suspectsMap = Immutable.Map({});           // Every distinct suspect a group has.
     }
 };

@@ -61,19 +61,22 @@ module.exports = class Ensemble {
      * This is the main method of using this module.
      * @param gId
      * @param sId
-     * @param event
+     * @param eventValue
      * @returns {*}
      */
-    getAnalysis(gId, sId, event) {
+    getAnalysis(gId, sId, eventValue) {
         try {
             // Validate input.
-            if (!this.constructor.isValidType([gId, sId, event], ['string', 'number'])) return {};
+            if (!this.constructor.isValidType([gId, sId, eventValue], ['string', 'number'])) return {};
 
             // Initialize a group.
             const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this._emphasis);
 
             // Process the event.
-            groupObj.setRecord(sId, event);
+            groupObj.setRecord(sId, {
+                type: 'eventMessage',
+                value: eventValue
+            });
 
             // Save the results.
             this._groupsMap = this._groupsMap.set(gId, groupObj);
