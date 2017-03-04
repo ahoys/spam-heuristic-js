@@ -43,7 +43,7 @@ exports.static_isValidType_multiLevelArrays = function (test) {
     test.done();
 };
 
-exports.static_getMapId_ok = function (test) {
+exports.static_getMapId = function (test) {
     const expected = [0, 1, 2, 0, 1];
     let id = -1;
     for (let i = 0; i < 5; ++i) {
