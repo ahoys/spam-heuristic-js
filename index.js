@@ -35,8 +35,14 @@ module.exports = class HeuristicEnsemble {
             arguments.constructor !== Array ||
             allowedTypes.constructor !== Array
         ) return false;
-        arguments.forEach((argument) => {
-            if (!allowedTypes.includes(typeof argument)) return false;
+        arguments.forEach((argument, i) => {
+            if (allowedTypes[i].constructor === Array) {
+                // allowedTypes construct: [["", ""], [""], ["", "", ""]];
+                if (!allowedTypes[i].includes(typeof argument)) return false;
+            } else {
+                // allowedTypes construct: ["", "", ""];
+                if (!allowedTypes.includes(typeof argument)) return false;
+            }
         });
         return true;
     }
