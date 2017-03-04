@@ -30,15 +30,27 @@ module.exports = class EventMessage extends Event {
         }
 
         // Analyse the results.
+        let sum = 0;
+        let max = 0;
+        let testCount = heuristicPercentages.length;
         let violations = 0;
-        let heuristicSum = 0;
         heuristicPercentages.forEach((percentage) => {
-            if (percentage > 10) violations++;
-            heuristicSum = heuristicSum + percentage;
+            if (percentage > max) {
+                max = percentage;
+            }
+            if (percentage > 33) {
+                violations++;
+            }
+            sum += percentage;
         });
+        const multiplier = sum / testCount / 100 + 1;
+
+        // Final results.
+        const resultCertainty = max * multiplier;
+        const resultSeverity = violations / testCount * 10 ;
 
         // Save the results.
-        super.certainty = (violations / heuristicPercentages.length) * 100;
-        super.severity = (heuristicSum / heuristicPercentages.length) / 10;
+        super.certainty = resultCertainty > 100 ? 100 : resultCertainty;
+        super.severity = resultSeverity > 10 ? 10 : resultSeverity;
     }
 };

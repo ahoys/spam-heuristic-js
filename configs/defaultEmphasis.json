@@ -1,6 +1,6 @@
 {
   "THRESHOLD": {
-    "certainty": 33,
-    "severity": 3
+    "certainty": 80,
+    "severity": 1
   }
 }
