@@ -99,7 +99,7 @@ module.exports = class Group {
                     const avgShortCertainty = 5 / totalShortCertainty * 100;
                     // We now have results for a long term analysis and a short term analysis.
                     // Results are average of the two analysis.
-                    return = {
+                    return {
                         certainty: (avgCertainty + avgShortCertainty) / 2,
                         severity: maxSeverity
                     };
