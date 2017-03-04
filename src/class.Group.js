@@ -1,6 +1,5 @@
 const Ensemble = require('../index');
 const Suspect = require('./class.Suspect');
-const Event = require('./class.Event');
 const EventMessage = require('./class.EventMessage');
 const Immutable = require('immutable');
 module.exports = class Group {
