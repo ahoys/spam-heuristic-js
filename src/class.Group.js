@@ -64,9 +64,51 @@ module.exports = class Group {
                 ? this.suspectsMap.get(sId)
                 : undefined;
             if (suspectObj) {
-                // An existing suspect.
+                // Collect noteworthy records by the suspect.
+                const suspectRecords = this.recordsMap
+                    .filter(x => x.sId === suspectObj.id &&
+                    x.eventObj.certainty >= this.emphasisValue.THRESHOLD.certainty &&
+                    x.eventObj.severity >= this.emphasisValue.THRESHOLD.severity);
+                if (suspectRecords.size > 0) {
+                    // Calculate base values.
+                    let totalCertainty = 0;
+                    let totalSeverity = 0;
+                    let totalShortCertainty = 0;
+                    let totalShortSeverity = 0;
+                    let maxSeverity = 0;
+                    const size = suspectRecords.size;
+                    const last5i = size - 5;
+                    const last25i = size - 25;
+                    suspectRecords.forEach((record, i) => {
+                        totalCertainty = totalCertainty + record.eventObj.certainty;
+                        totalSeverity = totalSeverity + record.eventObj.severity;
+                        if (size <= 5 || i >= last5i) {
+                            // Last 5 records for certainty.
+                            totalShortCertainty = totalShortCertainty + record.eventObj.certainty;
+                        }
+                        if (size <= 25 || i >= last25i) {
+                            // Last 25 records for severity.
+                            totalShortSeverity = totalShortSeverity + record.eventObj.severity;
+                        }
+                        if (record.eventObj.severity > maxSeverity) {
+                            maxSeverity = record.eventObj.severity;
+                        }
+                    });
+                    // Calculate averages.
+                    const avgCertainty = size / totalCertainty * 100;
+                    const avgShortCertainty = 5 / totalShortCertainty * 100;
+                    // We now have results for a long term analysis and a short term analysis.
+                    // Results are average of the two analysis.
+                    return = {
+                        certainty: (avgCertainty + avgShortCertainty) / 2,
+                        severity: maxSeverity
+                    };
+                }
             }
-            return {};
+            return {
+                certainty: 0,
+                severity: 0
+            };
         } catch (e) {
             console.log(`Error [Group][getSuspectAnalysis]: ${e.message}`);
             return {};

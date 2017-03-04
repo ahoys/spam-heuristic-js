@@ -70,7 +70,7 @@ module.exports = class Ensemble {
             if (!this.constructor.isValidType([gId, sId, eventValue], ['string', 'number'])) return {};
 
             // Initialize a group.
-            const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this._emphasis);
+            const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this.emphasis);
 
             // Process the event.
             groupObj.setRecord(sId, {
@@ -89,9 +89,9 @@ module.exports = class Ensemble {
         }
     };
 
-    constructor(_emphasis) {
-        this._emphasis = !!JSON.parse(_emphasis)
-            ? _emphasis
+    constructor(emphasis) {
+        this.emphasis = !!JSON.parse(emphasis)
+            ? emphasis
             : defaultEmphasis;
         this._groupsMap = Immutable.Map({});
     }

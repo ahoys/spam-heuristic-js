@@ -41,3 +41,16 @@ exports.setRecord = function (test) {
     test.expect(7);
     test.done();
 };
+
+exports.getSuspectAnalysis = function (test) {
+    const groupObj = new Group(gId0);
+
+    groupObj.setRecord(sId0, eventMessage0);
+    groupObj.setRecord(sId0, eventMessage1);
+
+    let actual = groupObj.getSuspectAnalysis(sId0);
+    test.deepEqual(actual, {}, '0');
+
+    test.expect(1);
+    test.done();
+};
