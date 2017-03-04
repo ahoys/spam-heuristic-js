@@ -118,7 +118,7 @@ module.exports = class Group {
 
     /**
      * Sets a new record for Group.
-     * A record is a combination of suspect's id, Event and time of the event.
+     * A record is a combination of suspect's id and Event.
      * @param sId
      * @param eventFrame
      */
@@ -147,8 +147,7 @@ module.exports = class Group {
                     this.recordsMapId,
                     {
                         sId: sId,
-                        eventObj: thisEvent,
-                        time: new Date().getTime()
+                        eventObj: thisEvent
                     }
                 );
             }
