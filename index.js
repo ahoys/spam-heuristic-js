@@ -25,26 +25,35 @@ module.exports = class Ensemble {
     }
 
     /**
-     * Returns true if the given arguments are valid.
-     * @param arguments
+     * Returns true if the given targets are valid.
+     * @param targets
      * @param allowedTypes
      * @returns {boolean}
      */
-    static validArguments(arguments, allowedTypes) {
-        if (
-            arguments.constructor !== Array ||
-            allowedTypes.constructor !== Array
-        ) return false;
-        arguments.forEach((argument, i) => {
-            if (allowedTypes[i].constructor === Array) {
-                // allowedTypes construct: [["", ""], [""], ["", "", ""]];
-                if (!allowedTypes[i].includes(typeof argument)) return false;
-            } else {
-                // allowedTypes construct: ["", "", ""];
-                if (!allowedTypes.includes(typeof argument)) return false;
-            }
-        });
-        return true;
+    static isValidType(targets, allowedTypes) {
+        const BreakException = {};
+        try {
+            if (
+                targets === undefined ||
+                allowedTypes === undefined ||
+                targets.constructor !== Array ||
+                allowedTypes.constructor !== Array
+            ) return false;
+            targets.forEach((target, i) => {
+                if (allowedTypes[i] !== undefined && allowedTypes[i].constructor === Array) {
+                    // allowedTypes construct: [["", ""], [""], ["", "", ""]];
+                    if (!allowedTypes[i].includes(typeof target)) throw BreakException;
+                } else {
+                    // allowedTypes construct: ["", "", ""];
+                    if (!allowedTypes.includes(typeof target)) throw BreakException;
+                }
+            });
+            return true;
+        } catch (e) {
+            if (e === BreakException) return false;
+            console.log(`Error [HeuristicEnsemble][isValidType]: ${e.message}`);
+            return false;
+        }
     }
 
     /**
@@ -58,7 +67,7 @@ module.exports = class Ensemble {
     getAnalysis(gId, sId, event) {
         try {
             // Validate input.
-            if (!this.constructor.validArguments([gId, sId, event], ['string', 'number'])) return {};
+            if (!this.constructor.isValidType([gId, sId, event], ['string', 'number'])) return {};
 
             // Initialize a group.
             const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this._emphasis);
