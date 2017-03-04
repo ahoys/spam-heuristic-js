@@ -1,3 +1,4 @@
+const immutable = require('immutable');
 module.exports = class Event {
 
     /**
@@ -54,7 +55,7 @@ module.exports = class Event {
      * @param str
      * @returns {number}
      */
-    static getRepetitiveCharsPercentage(str) {
+    static getPercentageOfRepetitiveChars(str) {
         try {
             // Validate arguments.
             if (typeof str !== 'string') return 0;
@@ -76,6 +77,33 @@ module.exports = class Event {
             return Math.round((violations / str.length) * 100);
         } catch (e) {
             console.log(`Error [Event][getRepetitiveCharsPercentage]: ${e.message}`);
+            return 0;
+        }
+    }
+
+    /**
+     * Returns a percentage of repetitive strings in an array.
+     * @param strings
+     * @returns {number}
+     */
+    static getPercentageOfRepetitiveStrings(strings) {
+        try {
+            if (strings.constructor !== Array) return 0;
+            let totalStrCount = strings.length;
+            let totalRepeatCountPercentage = 0;
+            const stringCounts = {};
+            // Count words.
+            strings.forEach((str) => {
+                stringCounts[str] = (stringCounts[str] || 0) + 1;
+            });
+            Object.keys(stringCounts).forEach((key) => {
+                if (stringCounts[key] > 1) {
+                    totalRepeatCountPercentage += stringCounts[key] / totalStrCount * 100;
+                }
+            });
+            return Math.round(totalRepeatCountPercentage);
+        } catch (e) {
+            console.log(`Error [Event][getRepetitiveStrings]: ${e.message}`);
             return 0;
         }
     }

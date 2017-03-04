@@ -14,6 +14,7 @@ module.exports = class EventMessage extends Event {
         super();
         this.msgValue = String(msgValue);
         this.msgWords = this.msgValue.split(" ");
+        this.msgWordsCount = this.msgWords.length;
 
         // Run heuristics for the value.
         const heuristicPercentages = [];
@@ -21,8 +22,12 @@ module.exports = class EventMessage extends Event {
             this.msgWords, Emphasis.EventMessage.short_word_limit));
         heuristicPercentages.push(Event.getPercentageOfLongWords(
             this.msgWords, Emphasis.EventMessage.long_word_limit));
-        heuristicPercentages.push(Event.getRepetitiveCharsPercentage(
+        heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
             this.msgValue));
+        if (this.msgWordsCount > 4) {
+            heuristicPercentages.push(Event.getPercentageOfRepetitiveStrings(
+                this.msgWords));
+        }
 
         // Analyse the results.
         let violations = 0;

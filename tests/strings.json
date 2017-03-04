@@ -33,5 +33,29 @@
     "Talking normally",
     "Then some advertising: http://strangesite.ru/ BUY NOW!",
     "Then I just act like everything were ok."
+  ],
+  "words_repeat_100_0": [
+    "spam",
+    "spam",
+    "spam",
+    "spam"
+  ],
+  "words_repeat_100_1": [
+    "spam",
+    "spam",
+    "test",
+    "test"
+  ],
+  "words_repeat_50": [
+    "spam",
+    "spam",
+    "not",
+    "net"
+  ],
+  "words_repeat_0": [
+    "a",
+    "b",
+    "c",
+    "d"
   ]
 }

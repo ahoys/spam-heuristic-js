@@ -81,6 +81,7 @@ module.exports = class Group {
                     const last5i = size - 5;
                     const last25i = size - 25;
                     suspectRecords.forEach((record, i) => {
+                        console.log('pass: ', record.eventObj, i);
                         totalCertainty = totalCertainty + record.eventObj.certainty;
                         totalSeverity = totalSeverity + record.eventObj.severity;
                         if (size <= 5 || i >= last5i) {
