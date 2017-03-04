@@ -28,16 +28,16 @@ exports.static_isValidType_singleLevelArrays = function (test) {
 
 exports.static_isValidType_multiLevelArrays = function (test) {
     let actual = Ensemble.isValidType(['test', '', 2], [['string'], ['number', 'string'], ['number']]);
-    test.equal(actual, true, '1');
+    test.equal(actual, true, '0');
 
     actual = Ensemble.isValidType(['', {}], [['string'], ['object']]);
-    test.equal(actual, true, '2');
+    test.equal(actual, true, '1');
 
     actual = Ensemble.isValidType(['test', 2], [['string'], ['string']]);
-    test.equal(actual, false, '3');
+    test.equal(actual, false, '2');
 
     actual = Ensemble.isValidType(['test', 2], [['string', 'number']]);
-    test.equal(actual, false, '4');
+    test.equal(actual, false, '3');
 
     test.expect(4);
     test.done();
