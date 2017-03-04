@@ -14,13 +14,13 @@ exports.static_isValidType_singleLevelArrays = function (test) {
     test.equal(actual, true, '2');
 
     actual = Ensemble.isValidType([], []);
-    test.equal(actual, true, '4');
+    test.equal(actual, true, '3');
 
     actual = Ensemble.isValidType(['test', '1'], ['number']);
-    test.equal(actual, false, '5');
+    test.equal(actual, false, '4');
 
     actual = Ensemble.isValidType(['test', '1'], []);
-    test.equal(actual, false, '6');
+    test.equal(actual, false, '5');
 
     test.expect(6);
     test.done();
