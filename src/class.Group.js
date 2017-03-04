@@ -124,6 +124,14 @@ module.exports = class Group {
         return this._id;
     }
 
+    get records() {
+        return this._recordsMap;
+    }
+
+    get suspects() {
+        return this._suspectsMap;
+    }
+
     constructor(_id, _emphasis) {
         this._id = _id;
         this._emphasis = _emphasis;

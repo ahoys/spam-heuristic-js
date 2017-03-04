@@ -1,18 +1,36 @@
-// nodeunit tests/index.js
-const Group = require('../components/inc.class.Group');
+const Group = require('../src/class.Group');
 const Immutable = require('immutable');
+
+// Variables ----------------------------------
+
+const gId0 = 'g123';
+const sId0 = 's123';
+const eventMessage0 = 'msg 123 ! " / 3';
 
 // Tests --------------------------------------
 
-exports.initialize = function (test) {
-    const groupObj = new Group(0);
-    test.equal(typeof groupObj, 'object');
-    test.equal(groupObj.id, 0);
-    test.deepEqual(groupObj.suspects, Immutable.Map({}));
-    test.deepEqual(groupObj.getGroupAnalysis(), {
-        certainty: 0,
-        severity: 0
-    });
-    test.expect(4);
+exports.setRecord = function (test) {
+
+
+    const groupObj = new Group(gId0);
+
+    let actual = groupObj.id;
+    test.equal(actual, gId0, '0');
+
+    groupObj.setRecord(sId0, eventMessage0);
+
+    // Records testing.
+    actual = groupObj.records;
+    test.deepEqual(actual.get(0).suspect, sId0, '1');
+
+    // Suspects testing.
+    actual = groupObj.suspects;
+    test.equal(actual.get(sId0).id, sId0, '2');
+
+    test.expect(3);
     test.done();
 };
+
+// exports.getSuspectAnalysis = function (test) {
+//
+// };
