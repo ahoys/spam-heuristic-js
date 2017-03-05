@@ -55,6 +55,20 @@ module.exports = class Group {
     }
 
     /**
+     * Returns percentage of how many of the event values are identical.
+     * @param events
+     * @returns {number}
+     */
+    static getPercentageOfRepetitiveEvents(events) {
+        try {
+            return 0;
+        } catch (e) {
+            console.log(`Error [Group][getPercentageOfRepetativeEvents]: ${e.message}`);
+            return 0;
+        }
+    }
+
+    /**
      * Returns a group level analysis for a suspect.
      * @param sId
      * @returns {{certainty: number, severity: number, violations: number}|*}
@@ -69,7 +83,7 @@ module.exports = class Group {
                 let i = 0;
                 let totalCertainty = 0;
                 let maxSeverity = 0;
-                this.recordsMap.forEach((record) => {
+                const suspectEvents = this.recordsMap.filter((record) => {
                     if (record.sId === suspectObj.id && i < emphasis.RANGE.recent_history) {
                         // A record by the suspect.
                         i++;
@@ -81,8 +95,11 @@ module.exports = class Group {
                                 maxSeverity = record.eventObj.severity;
                             }
                         }
+                        return record.eventObj;
                     }
                 });
+                // Find out whether the recorded events are identical (spam).
+                const repeat = this.constructor.getPercentageOfRepetitiveEvents(suspectEvents);
                 return {
                     certainty: Math.round(totalCertainty / (i || 1)),
                     severity: Math.round(maxSeverity)

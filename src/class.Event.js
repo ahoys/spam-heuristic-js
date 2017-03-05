@@ -180,7 +180,16 @@ module.exports = class Event {
         return this.createdValue;
     }
 
-    constructor() {
+    /**
+     * Returns the value of an event.
+     * @returns {*}
+     */
+    get value() {
+        return this.eventValue;
+    }
+
+    constructor(eventValue) {
+        this.eventValue = eventValue;
         this.createdValue = Number(new Date().getTime());
         this.certaintyValue = 0;
         this.severityValue = 0;

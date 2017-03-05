@@ -11,7 +11,7 @@ module.exports = class EventMessage extends Event {
     }
 
     constructor(msgValue) {
-        super();
+        super(msgValue);
         this.msgValue = String(msgValue);
         this.msgWords = this.msgValue.split(" ");
         this.msgWordsCount = this.msgWords.length;
