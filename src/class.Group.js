@@ -120,37 +120,27 @@ module.exports = class Group {
      * Sets a new record for Group.
      * A record is a combination of suspect's id and Event.
      * @param sId
-     * @param eventFrame
+     * @param eventObj
      */
-    setRecord(sId, eventFrame) {
+    setRecord(sId, eventObj) {
         try {
             // Validate input.
-            if (!Ensemble.isValidType([sId, eventFrame], [['string', 'number'], ['object']])) return;
-            if (!Ensemble.isValidType([eventFrame.type, eventFrame.value], [['string'], ['string', 'number']])) return;
+            if (!Ensemble.isValidType([sId, eventObj], [['string', 'number'], ['object']])) return;
 
             // Register distinct suspects.
             if (!this.suspectsMap.has(sId)) {
                 this.suspectsMap = this.suspectsMap.set(sId, new Suspect(sId));
             }
 
-            // Create an event based on the eventFrame.
-            // Events are always new.
-            let thisEvent;
-            if (eventFrame.type === 'eventMessage') {
-                // EventMessage
-                thisEvent = new EventMessage(eventFrame.value);
-            }
-
-            if (thisEvent) {
-                this.recordsMapId = Ensemble.getMapId(this.recordsMapId, 128);
-                this.recordsMap = this.recordsMap.set(
-                    this.recordsMapId,
-                    {
-                        sId: sId,
-                        eventObj: thisEvent
-                    }
-                );
-            }
+            // Create a record.
+            this.recordsMapId = Ensemble.getMapId(this.recordsMapId, 128);
+            this.recordsMap = this.recordsMap.set(
+                this.recordsMapId,
+                {
+                    sId: sId,
+                    eventObj: eventObj
+                }
+            );
         } catch (e) {
             console.log(`Error [Group][setRecord]: ${e.message}`);
         }

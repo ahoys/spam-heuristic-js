@@ -1,4 +1,5 @@
 const Group = require('./src/class.Group');
+const EventMessage = require('./src/class.EventMessage');
 const Immutable = require('immutable');
 
 module.exports = class Ensemble {
@@ -71,11 +72,11 @@ module.exports = class Ensemble {
             // Initialize a group.
             const groupObj = this._groupsMap.has(gId) ? this._groupsMap.get(gId) : new Group(gId, this.emphasis);
 
-            // Process the event.
-            groupObj.setRecord(sId, {
-                type: 'eventMessage',
-                value: eventValue
-            });
+            // Process an event.
+            if (typeof eventValue === 'string' || typeof eventValue === 'number') {
+                // EventMessage
+                groupObj.setRecord(sId, new EventMessage(eventValue));
+            }
 
             // Save the results.
             this._groupsMap = this._groupsMap.set(gId, groupObj);
