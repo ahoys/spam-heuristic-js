@@ -1,4 +1,5 @@
 const Group = require('../src/class.Group');
+const EventMessage = require('../src/class.EventMessage');
 const strings = require('./strings.json');
 
 // Tests --------------------------------------
@@ -38,11 +39,11 @@ exports.getSuspectAnalysis = function (test) {
     const groupObj = new Group(strings.group_ids[0]);
 
     strings.messages_ok_0.forEach((message) => {
-        groupObj.setRecord(strings.user_ids[0], {type: 'eventMessage', value: message});
+        groupObj.setRecord(strings.user_ids[0], new EventMessage(message));
     });
 
     strings.messages_fail_0.forEach((message) => {
-        groupObj.setRecord(strings.user_ids[1], {type: 'eventMessage', value: message});
+        groupObj.setRecord(strings.user_ids[1], new EventMessage(message));
     });
 
     let actual = groupObj.getSuspectAnalysis(strings.user_ids[0]);

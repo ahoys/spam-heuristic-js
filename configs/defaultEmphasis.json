@@ -1,6 +1,9 @@
 {
   "THRESHOLD": {
-    "certainty": 80,
-    "severity": 1
+    "min_certainty": 50,
+    "min_severity": 1
+  },
+  "RANGE": {
+    "recent_history": 16
   }
 }

@@ -75,7 +75,7 @@ module.exports = class Ensemble {
             // Process an event.
             if (typeof eventValue === 'string' || typeof eventValue === 'number') {
                 // EventMessage
-                groupObj.setRecord(sId, new EventMessage(eventValue));
+                groupObj.setRecord(sId, new EventMessage(String(eventValue)));
             }
 
             // Save the results.

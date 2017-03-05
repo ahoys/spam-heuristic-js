@@ -61,49 +61,31 @@ module.exports = class Group {
      */
     getSuspectAnalysis(sId) {
         try {
-            const suspectObj = this.suspectsMap.has(sId)
-                ? this.suspectsMap.get(sId)
-                : undefined;
-            if (suspectObj) {
+            if (this.suspectsMap.has(sId)) {
+                const suspectObj = this.suspectsMap.get(sId);
+                const emphasis = this.emphasisValue;
                 // Collect noteworthy records by the suspect.
-                const suspectRecords = this.recordsMap
-                    .filter(x => x.sId === suspectObj.id &&
-                    x.eventObj.certainty >= this.emphasisValue.THRESHOLD.certainty &&
-                    x.eventObj.severity >= this.emphasisValue.THRESHOLD.severity);
-                if (suspectRecords.size > 0) {
-                    // Calculate base values.
-                    let totalCertainty = 0;
-                    let totalSeverity = 0;
-                    let totalShortCertainty = 0;
-                    let totalShortSeverity = 0;
-                    let maxSeverity = 0;
-                    const size = suspectRecords.size;
-                    const last5i = size - 5;
-                    const last25i = size - 25;
-                    suspectRecords.forEach((record, i) => {
-                        totalCertainty = totalCertainty + record.eventObj.certainty;
-                        totalSeverity = totalSeverity + record.eventObj.severity;
-                        if (size <= 5 || i >= last5i) {
-                            // Last 5 records for certainty.
-                            totalShortCertainty = totalShortCertainty + record.eventObj.certainty;
+                // We are only interested about the near history.
+                let i = 0;
+                let totalCertainty = 0;
+                let maxSeverity = 0;
+                this.recordsMap.forEach((record) => {
+                    if (record.sId === suspectObj.id && i < emphasis.RANGE.recent_history) {
+                        // A record by the suspect.
+                        i++;
+                        console.log(record.eventObj.certainty);
+                        if (record.eventObj.certainty >= emphasis.THRESHOLD.min_certainty) {
+                            // A noteworthy record.
+                            totalCertainty += record.eventObj.certainty;
+                            if (record.eventObj.severity > maxSeverity) {
+                                maxSeverity = record.eventObj.severity;
+                            }
                         }
-                        if (size <= 25 || i >= last25i) {
-                            // Last 25 records for severity.
-                            totalShortSeverity = totalShortSeverity + record.eventObj.severity;
-                        }
-                        if (record.eventObj.severity > maxSeverity) {
-                            maxSeverity = record.eventObj.severity;
-                        }
-                    });
-                    // Calculate averages.
-                    const avgCertainty = size / totalCertainty * 100;
-                    const avgShortCertainty = 5 / totalShortCertainty * 100;
-                    // We now have results for a long term analysis and a short term analysis.
-                    // Results are average of the two analysis.
-                    return {
-                        certainty: Math.round((avgCertainty + avgShortCertainty) / 2),
-                        severity: Math.round(maxSeverity)
-                    };
+                    }
+                });
+                return {
+                    certainty: Math.round(totalCertainty / (i || 1)),
+                    severity: Math.round(maxSeverity)
                 }
             }
             return {
