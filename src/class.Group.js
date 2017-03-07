@@ -6,55 +6,6 @@ const Immutable = require('immutable');
 module.exports = class Group {
 
     /**
-     * Returns a percentage of events in a group's recent history that has
-     * been violating events (regular spam with variation).
-     * @param groupObj
-     */
-    static getPercentageOfViolatingEvents(groupObj) {
-        try {
-            if (groupObj instanceof Group) {
-                let violationC = 0;
-                groupObj.recordsMap.forEach((record) => {
-                    if (record.isNoteworthy()) violationC++;
-                });
-                return Math.round((violationC / groupObj.recordsMap.size) * 100);
-            }
-            return 0;
-        } catch (e) {
-            console.log(`Error [Group][getPercentageOfViolatingEvents]: ${e.message}`);
-            return 0;
-        }
-    }
-
-    /**
-     * Returns a percentage of events in a group's recent history that has
-     * been identical events (regular spam). Do note that the suspects may vary.
-     * @param groupObj
-     * @param eventObj
-     */
-    static getPercentageOfIdenticalEvents(groupObj, eventObj) {
-        try {
-            if (groupObj instanceof Group && eventObj instanceof Event) {
-                const eventType = eventObj.constructor.name;
-                let identicalC = 0;
-                groupObj.recordsMap.forEach((record) => {
-                    const eventRecord = record.event;
-                    if (eventRecord.constructor.name === eventType) {
-                        if (
-                            eventType === 'eventMessage' &&
-                            eventRecord.message === eventObj.message
-                        ) identicalC++;
-                    }
-                });
-                return Math.round((identicalC / groupObj.recordsMap.size) * 100);
-            }
-        } catch (e) {
-            console.log(`Error [Group][getPercentageOfIdenticalEvents]: ${e.message}`);
-            return 0;
-        }
-    }
-
-    /**
      * Returns a percentage of how many of the event values are identical.
      * @param events
      * @returns {number}
