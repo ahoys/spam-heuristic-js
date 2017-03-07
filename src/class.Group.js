@@ -153,6 +153,7 @@ module.exports = class Group {
                 });
                 const testCount = heuristicPercentages.length;
                 const multiplier = sum / testCount / 100 + 1;
+                console.log('group level: ', totalCertainty, maxSeverity, max, multiplier, violations, testCount);
                 totalCertainty += max * multiplier;
                 maxSeverity += violations / testCount * 10;
                 // Return the final results.

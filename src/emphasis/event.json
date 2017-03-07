@@ -1,6 +1,6 @@
 {
   "EventMessage": {
-    "short_word_limit": 4,
+    "short_word_limit": 3,
     "long_word_limit": 16
   }
 }

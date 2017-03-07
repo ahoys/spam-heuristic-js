@@ -18,8 +18,10 @@ module.exports = class EventMessage extends Event {
 
         // Run heuristics for the value.
         const heuristicPercentages = [];
-        heuristicPercentages.push(Event.getPercentageOfShortWords(
-            this.msgWords, Emphasis.EventMessage.short_word_limit));
+        if (this.msgWordsCount > 2) {
+            heuristicPercentages.push(Event.getPercentageOfShortWords(
+                this.msgWords, Emphasis.EventMessage.short_word_limit));
+        }
         heuristicPercentages.push(Event.getPercentageOfLongWords(
             this.msgWords, Emphasis.EventMessage.long_word_limit));
         heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
@@ -48,6 +50,8 @@ module.exports = class EventMessage extends Event {
         // Final results.
         const resultCertainty = max * multiplier;
         const resultSeverity = violations / testCount * 10 ;
+
+        console.log('E: ', msgValue, resultCertainty, resultSeverity);
 
         // Save the results.
         super.certainty = resultCertainty > 100 ? 100 : resultCertainty;

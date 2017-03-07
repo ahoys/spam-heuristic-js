@@ -38,12 +38,16 @@ exports.setRecord = function (test) {
 exports.getSuspectAnalysis = function (test) {
     const groupObj = new Group(strings.group_ids[0]);
 
-    strings.messages_ok_0.forEach((message) => {
-        groupObj.setRecord(strings.user_ids[0], new EventMessage(message));
+    strings.messages_ok_0.forEach((message, i) => {
+        const eventObj = new EventMessage(message);
+        eventObj.created = Number(1488915220322 + i * 3000);
+        groupObj.setRecord(strings.user_ids[0], eventObj);
     });
 
-    strings.messages_fail_0.forEach((message) => {
-        groupObj.setRecord(strings.user_ids[1], new EventMessage(message));
+    strings.messages_fail_0.forEach((message, i) => {
+        const eventObj = new EventMessage(message);
+        eventObj.created = Number(1488915220322 + i * 3000);
+        groupObj.setRecord(strings.user_ids[1], eventObj);
     });
 
     let actual = groupObj.getSuspectAnalysis(strings.user_ids[0]);
