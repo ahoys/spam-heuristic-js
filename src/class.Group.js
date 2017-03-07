@@ -115,18 +115,17 @@ module.exports = class Group {
     getSuspectAnalysis(sId) {
         try {
             if (this.suspectsMap.has(sId)) {
+                // Initial target and settings.
                 const suspectObj = this.suspectsMap.get(sId);
                 const emphasis = this.emphasisValue;
                 // Collect noteworthy records by the suspect.
                 // We are only interested about the near history.
-                const suspectEvents = [];
-                let i = 0;
                 let totalCertainty = 0;
                 let maxSeverity = 0;
-                this.recordsMap.forEach((record) => {
+                const suspectEvents = [];
+                this.recordsMap.forEach((record, i) => {
                     if (record.sId === suspectObj.id && i < emphasis.RANGE.recent_history) {
                         // A record by the suspect.
-                        i++;
                         if (record.eventObj.certainty >= emphasis.THRESHOLD.min_certainty) {
                             // A noteworthy record.
                             totalCertainty += record.eventObj.certainty;
@@ -137,14 +136,12 @@ module.exports = class Group {
                         suspectEvents.push(record.eventObj);
                     }
                 });
-
                 // Run heuristics.
                 const heuristicPercentages = [];
                 // Find out whether the recorded events are identical (spam).
                 heuristicPercentages.push(this.constructor.getPercentageOfRepetitiveEvents(suspectEvents));
-                // Find out whether the suspec is fast spamming.
+                // Find out whether the suspect is fast spamming.
                 heuristicPercentages.push(this.constructor.getPercentageOfRapidEvents(suspectEvents));
-
                 // Analyze the results.
                 let max = 0;
                 let violations = 0;
@@ -158,7 +155,6 @@ module.exports = class Group {
                 const multiplier = sum / testCount / 100 + 1;
                 totalCertainty += max * multiplier;
                 maxSeverity += violations / testCount * 10;
-
                 // Return the final results.
                 return {
                     certainty: Math.round(totalCertainty > 100 ? 100 : totalCertainty),
