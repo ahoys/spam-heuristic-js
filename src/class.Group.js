@@ -1,7 +1,7 @@
 const Ensemble = require('../index');
 const Suspect = require('./class.Suspect');
 const EventMessage = require('./class.EventMessage');
-const defaultEmphasis = require('../configs/defaultEmphasis.json');
+const defaultEmphasis = require('./emphasis/group.json');
 const Immutable = require('immutable');
 module.exports = class Group {
 
@@ -104,7 +104,6 @@ module.exports = class Group {
                 });
                 const testCount = heuristicPercentages.length;
                 const multiplier = sum / testCount / 100 + 1;
-                console.log('group level: ', totalCertainty, maxSeverity, max, multiplier, violations, testCount);
                 totalCertainty += max * multiplier;
                 maxSeverity += violations / testCount * 10;
                 // Return the final results.

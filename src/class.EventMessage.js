@@ -51,8 +51,6 @@ module.exports = class EventMessage extends Event {
         const resultCertainty = max * multiplier;
         const resultSeverity = violations / testCount * 10 ;
 
-        console.log('E: ', msgValue, resultCertainty, resultSeverity);
-
         // Save the results.
         super.certainty = resultCertainty > 100 ? 100 : resultCertainty;
         super.severity = resultSeverity > 10 ? 10 : resultSeverity;
