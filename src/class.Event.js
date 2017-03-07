@@ -128,13 +128,13 @@ module.exports = class Event {
      * Sets certainty for an event.
      * Certainty tells how probable it is that the heuristics have detected a real threat.
      * 0: No threats, 100: fully certain of a threat.
-     * @param cValue
+     * @param value
      */
-    set certainty(cValue) {
+    set certainty(value) {
         try {
-            if (cValue > 100) this.certaintyValue = 100;
-            if (cValue < 0) this.certaintyValue = 0;
-            this.certaintyValue = Math.round(Number(cValue));
+            if (value > 100) this.certaintyValue = 100;
+            if (value < 0) this.certaintyValue = 0;
+            this.certaintyValue = Math.round(Number(value));
         } catch (e) {
             console.log(`Error [Event][set certainty]: ${e.message}`);
         }
@@ -144,17 +144,32 @@ module.exports = class Event {
      * Sets severity for an event.
      * Severity tells how serious the violations are.
      * 0: Not serious at all, 10: very serious.
-     * @param sValue
+     * @param value
      */
-    set severity(sValue) {
+    set severity(value) {
         try {
-            if (sValue > 10) this.severityValue = 10;
-            if (sValue < 0) this.severityValue = 0;
-            this.severityValue = Math.round(Number(sValue));
+            if (value > 10) this.severityValue = 10;
+            if (value < 0) this.severityValue = 0;
+            this.severityValue = Math.round(Number(value));
         } catch (e) {
             console.log(`Error [Event][set severity]: ${e.message}`);
         }
     };
+
+    /**
+     * Sets a new created timestamp.
+     * Mainly for testing purposes.
+     * @param value
+     */
+    set created(value) {
+        try {
+            if (typeof value === 'number') {
+                this.createdValue = value;
+            }
+        } catch (e) {
+            console.log(`Error [Event][set created]: ${e.message}`);
+        }
+    }
 
     /**
      * Returns certainty of an event.
