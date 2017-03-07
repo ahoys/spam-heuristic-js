@@ -6,7 +6,7 @@ const Immutable = require('immutable');
 module.exports = class Group {
 
     /**
-     * Returns percentage of events in a group's recent history that has
+     * Returns a percentage of events in a group's recent history that has
      * been violating events (regular spam with variation).
      * @param groupObj
      */
@@ -27,7 +27,7 @@ module.exports = class Group {
     }
 
     /**
-     * Returns percentage of events in a group's recent history that has
+     * Returns a percentage of events in a group's recent history that has
      * been identical events (regular spam). Do note that the suspects may vary.
      * @param groupObj
      * @param eventObj
@@ -55,15 +55,54 @@ module.exports = class Group {
     }
 
     /**
-     * Returns percentage of how many of the event values are identical.
+     * Returns a percentage of how many of the event values are identical.
      * @param events
      * @returns {number}
      */
     static getPercentageOfRepetitiveEvents(events) {
         try {
-            return 0;
+            if (events.constructor !== Array) return 0;
+            // Count how many times each value has occurred.
+            const valueCounts = {};
+            events.forEach((event) => {
+                valueCounts[event.value] = (valueCounts[event.value] || 0) + 1;
+            });
+            // Count how many percent of the events are copies.
+            let totalRepeatCountPercentage = 0;
+            let totalValueCount = events.length;
+            Object.keys(valueCounts).forEach((key) => {
+                if (valueCounts[key] > 1) {
+                    totalRepeatCountPercentage += valueCounts[key] / totalValueCount * 100;
+                }
+            });
+            return totalRepeatCountPercentage;
         } catch (e) {
             console.log(`Error [Group][getPercentageOfRepetativeEvents]: ${e.message}`);
+            return 0;
+        }
+    }
+
+    /**
+     * Returns a percentage of how many of the given events are created in less than 2 seconds from each other.
+     * @param events
+     * @returns {number}
+     */
+    static getPercentageOfRapidEvents(events) {
+        try {
+            if (events.constructor !== Array) return 0;
+            const timestamps = events.map(event => event.created);
+            let previous = 0;
+            let rapidEventsCount = 0;
+            timestamps.forEach((timestamp, i) => {
+                if (i < 1) {
+                    previous = timestamp;
+                } else {
+                    if (timestamp - previous < 2000) rapidEventsCount ++;
+                }
+            });
+            return rapidEventsCount / events.length * 100;
+        } catch (e) {
+            console.log(`Error [Group][getPercentageOfRapidEvents]: ${e.message}`);
             return 0;
         }
     }
@@ -80,14 +119,14 @@ module.exports = class Group {
                 const emphasis = this.emphasisValue;
                 // Collect noteworthy records by the suspect.
                 // We are only interested about the near history.
+                const suspectEvents = [];
                 let i = 0;
                 let totalCertainty = 0;
                 let maxSeverity = 0;
-                const suspectEvents = this.recordsMap.filter((record) => {
+                this.recordsMap.forEach((record) => {
                     if (record.sId === suspectObj.id && i < emphasis.RANGE.recent_history) {
                         // A record by the suspect.
                         i++;
-                        console.log(record.eventObj.certainty);
                         if (record.eventObj.certainty >= emphasis.THRESHOLD.min_certainty) {
                             // A noteworthy record.
                             totalCertainty += record.eventObj.certainty;
@@ -95,14 +134,35 @@ module.exports = class Group {
                                 maxSeverity = record.eventObj.severity;
                             }
                         }
-                        return record.eventObj;
+                        suspectEvents.push(record.eventObj);
                     }
                 });
+
+                // Run heuristics.
+                const heuristicPercentages = [];
                 // Find out whether the recorded events are identical (spam).
-                const repeat = this.constructor.getPercentageOfRepetitiveEvents(suspectEvents);
+                heuristicPercentages.push(this.constructor.getPercentageOfRepetitiveEvents(suspectEvents));
+                // Find out whether the suspec is fast spamming.
+                heuristicPercentages.push(this.constructor.getPercentageOfRapidEvents(suspectEvents));
+
+                // Analyze the results.
+                let max = 0;
+                let violations = 0;
+                let sum = 0;
+                heuristicPercentages.forEach((percentage) => {
+                    if (percentage > max) max = percentage;
+                    if (percentage > 33) violations++;
+                    sum += percentage;
+                });
+                const testCount = heuristicPercentages.length;
+                const multiplier = sum / testCount / 100 + 1;
+                totalCertainty += max * multiplier;
+                maxSeverity += violations / testCount * 10;
+
+                // Return the final results.
                 return {
-                    certainty: Math.round(totalCertainty / (i || 1)),
-                    severity: Math.round(maxSeverity)
+                    certainty: Math.round(totalCertainty > 100 ? 100 : totalCertainty),
+                    severity: Math.round(maxSeverity > 10 ? 10 : maxSeverity)
                 }
             }
             return {
