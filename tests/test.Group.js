@@ -40,22 +40,31 @@ exports.getSuspectAnalysis = function (test) {
 
     strings.messages_ok_0.forEach((message, i) => {
         const eventObj = new EventMessage(message);
-        eventObj.created = Number(1488915220322 + i * 3000);
-        groupObj.setRecord(strings.user_ids[0], eventObj);
+        eventObj.created = Number(1088915220322 + i * 3000);
+        groupObj.setRecord('user_id0', eventObj);
+    });
+
+    strings.messages_ok_1.forEach((message, i) => {
+        const eventObj = new EventMessage(message);
+        eventObj.created = Number(1188915220322 + i * 3000);
+        groupObj.setRecord('user_id1', eventObj);
     });
 
     strings.messages_fail_0.forEach((message, i) => {
         const eventObj = new EventMessage(message);
-        eventObj.created = Number(1488915220322 + i * 3000);
-        groupObj.setRecord(strings.user_ids[1], eventObj);
+        eventObj.created = Number(1288915220322 + i * 3000);
+        groupObj.setRecord('user_id2', eventObj);
     });
 
-    let actual = groupObj.getSuspectAnalysis(strings.user_ids[0]);
-    test.deepEqual(actual, {}, '0');
+    let actual = groupObj.getSuspectAnalysis('user_id0');
+    test.deepEqual(actual, {}, 'getSuspectAnalysis 0');
 
-    actual = groupObj.getSuspectAnalysis(strings.user_ids[1]);
-    test.deepEqual(actual, {}, '1');
+    actual = groupObj.getSuspectAnalysis('user_id1');
+    test.deepEqual(actual, {}, 'getSuspectAnalysis 1');
 
-    test.expect(2);
+    actual = groupObj.getSuspectAnalysis('user_id2');
+    test.deepEqual(actual, {}, 'getSuspectAnalysis 2');
+
+    test.expect(3);
     test.done();
 };
