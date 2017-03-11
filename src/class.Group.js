@@ -100,7 +100,7 @@ module.exports = class Group {
                 heuristicPercentages.forEach((percentage) => {
                     if (percentage > max) max = percentage;
                     if (percentage > 33) violations++;
-                    sum += percentage;
+                    sum += percentage || 0;
                 });
                 const testCount = heuristicPercentages.length;
                 const multiplier = sum / testCount / 100 + 1;
