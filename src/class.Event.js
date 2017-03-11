@@ -1,25 +1,40 @@
 const immutable = require('immutable');
+const Heuristics = require('./emphasis/heuristics.json');
 module.exports = class Event {
 
     /**
      * Returns a percentage of short words in a string.
      * @param words
-     * @param minWordLength
+     * @param isRelevantCheck
+     * @param useMultiplier
      * @returns {number}
      */
-    static getPercentageOfShortWords(words, minWordLength) {
+    static getPercentageOfShortWords(words, isRelevantCheck = true, useMultiplier = true) {
         try {
-            // Validate arguments.
-            if (words.constructor !== Array || typeof minWordLength !== 'number') return 0;
-            // Calculate percentage.
-            const wordCount = words.length;
-            let count = 0;
-            words.forEach((word) => {
-                if (typeof word === 'string' && word.length < minWordLength) {
-                    count++;
-                }
+            // Words to be processed must exist or otherwise the result is
+            // obviously zero.
+            if (!words || words.constructor !== Array) return 0;
+            // Return zero if the sentence is too short.
+            const wordsCount = words.length;
+            if (
+                isRelevantCheck &&
+                wordsCount <= Heuristics.getPercentageOfShortWords.min_words_before_relevant
+            ) return 0;
+            // The count of short words of all words.
+            const count = words.reduce((a, b, i) => {
+                return (isNaN(a)
+                        ? a.length <= Heuristics.getPercentageOfShortWords.min_word_length
+                            ? 1
+                            : 0
+                        : a) + (
+                    b.length <= Heuristics.getPercentageOfShortWords.min_word_length
+                        ? useMultiplier
+                            ? 1 / b.length
+                            : 1
+                        : 0
+                    );
             });
-            return Math.round((count / wordCount) * 100);
+            return count / wordsCount * 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
             return 0;

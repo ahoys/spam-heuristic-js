@@ -1,0 +1,6 @@
+{
+  "getPercentageOfShortWords": {
+    "min_words_before_relevant": 4,
+    "min_word_length": 3
+  }
+}

@@ -18,10 +18,7 @@ module.exports = class EventMessage extends Event {
 
         // Run heuristics for the value.
         const heuristicPercentages = [];
-        if (msgWordsCount > 2) {
-            heuristicPercentages.push(Event.getPercentageOfShortWords(
-                msgWords, Emphasis.EventMessage.short_word_limit));
-        }
+        heuristicPercentages.push(Event.getPercentageOfShortWords(msgWords));
         heuristicPercentages.push(Event.getPercentageOfLongWords(
             msgWords, Emphasis.EventMessage.long_word_limit));
         heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
