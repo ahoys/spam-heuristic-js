@@ -23,7 +23,7 @@ module.exports = class Group {
             let totalValueCount = events.length;
             Object.keys(valueCounts).forEach((key) => {
                 if (valueCounts[key] > 1) {
-                    totalRepeatCountPercentage += valueCounts[key] / totalValueCount * 100;
+                    totalRepeatCountPercentage += valueCounts[key] / (totalValueCount || 1) * 100;
                 }
             });
             return totalRepeatCountPercentage;
@@ -51,7 +51,7 @@ module.exports = class Group {
                     if (timestamp - previous < 2000) rapidEventsCount ++;
                 }
             });
-            return rapidEventsCount / events.length * 100;
+            return rapidEventsCount / (events.length || 1) * 100;
         } catch (e) {
             console.log(`Error [Group][getPercentageOfRapidEvents]: ${e.message}`);
             return 0;
