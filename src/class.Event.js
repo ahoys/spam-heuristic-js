@@ -16,27 +16,22 @@ module.exports = class Event {
             if (!words || words.constructor !== Array) return 0;
             // Return zero if the sentence is too short.
             const wordsCount = words.length;
+            const emphasis = Heuristics.getPercentageOfShortWords;
             if (
                 isRelevantCheck &&
-                wordsCount <= Heuristics.getPercentageOfShortWords.min_words_before_relevant
+                wordsCount <= emphasis.min_words_before_relevant
             ) return 0;
             // The count of short words of all words.
-            const count = words.reduce((a, b, i) => {
-                return (i === 1
-                        ? a.length <= Heuristics.getPercentageOfShortWords.min_word_length
-                            ? useMultiplier
-                                ? 1 / b.length
-                                : 1
-                            : 0
-                        : a) + (
-                            b.length <= Heuristics.getPercentageOfShortWords.min_word_length
-                                ? useMultiplier
-                                    ? 1 / b.length
-                                    : 1
-                                : 0
-                    );
+            let shortWords = 0;
+            words.forEach((word) => {
+                if (word.length <= emphasis.min_word_length) {
+                    shortWords += useMultiplier
+                        ? 1 + (emphasis.min_word_length - word.length) * emphasis.multiplier
+                        : 1;
+                }
             });
-            return count / (wordsCount || 1) * 100;
+            const result = shortWords / (wordsCount || 1) * 100;
+            return result <= 100 ? result : 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
             return 0;
@@ -66,7 +61,7 @@ module.exports = class Event {
             let longWords = 0;
             const urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
             const regex = new RegExp(urlRegex);
-            words.forEach((word, i) => {
+            words.forEach((word) => {
                 if (word.length >= emphasis.min_word_length) {
                     // We are not going to count urls.
                     if (!regex.test(word)) {
@@ -77,7 +72,7 @@ module.exports = class Event {
                 }
             });
             const result = longWords / (wordsCount || 1) * 100;
-            return result < 100 ? result : 100;
+            return result <= 100 ? result : 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
             return 0;
