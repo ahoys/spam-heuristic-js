@@ -24,7 +24,9 @@ module.exports = class Event {
             const count = words.reduce((a, b, i) => {
                 return (isNaN(a)
                         ? a.length <= Heuristics.getPercentageOfShortWords.min_word_length
-                            ? 1
+                            ? useMultiplier
+                                ? 1 / b.length
+                                : 1
                             : 0
                         : a) + (
                     b.length <= Heuristics.getPercentageOfShortWords.min_word_length
@@ -34,7 +36,7 @@ module.exports = class Event {
                         : 0
                     );
             });
-            return count / wordsCount * 100;
+            return count / (wordsCount || 0) * 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
             return 0;
