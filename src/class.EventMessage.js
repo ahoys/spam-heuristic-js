@@ -13,22 +13,22 @@ module.exports = class EventMessage extends Event {
     constructor(msgValue) {
         super(msgValue);
         this.msgValue = String(msgValue);
-        this.msgWords = this.msgValue.split(" ");
-        this.msgWordsCount = this.msgWords.length;
+        const msgWords = this.msgValue.split(" ");
+        const msgWordsCount = msgWords.length;
 
         // Run heuristics for the value.
         const heuristicPercentages = [];
-        if (this.msgWordsCount > 2) {
+        if (msgWordsCount > 2) {
             heuristicPercentages.push(Event.getPercentageOfShortWords(
-                this.msgWords, Emphasis.EventMessage.short_word_limit));
+                msgWords, Emphasis.EventMessage.short_word_limit));
         }
         heuristicPercentages.push(Event.getPercentageOfLongWords(
-            this.msgWords, Emphasis.EventMessage.long_word_limit));
+            msgWords, Emphasis.EventMessage.long_word_limit));
         heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
             this.msgValue));
-        if (this.msgWordsCount > 4) {
+        if (msgWordsCount > 4) {
             heuristicPercentages.push(Event.getPercentageOfRepetitiveStrings(
-                this.msgWords));
+                msgWords));
         }
 
         // Analyse the results.
