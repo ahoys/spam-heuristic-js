@@ -2,5 +2,10 @@
   "getPercentageOfShortWords": {
     "min_words_before_relevant": 4,
     "min_word_length": 3
+  },
+  "getPercentageOfLongWords": {
+    "min_words_before_relevant": 0,
+    "min_word_length": 16,
+    "multiplier": 0.1
   }
 }

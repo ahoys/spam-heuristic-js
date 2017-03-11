@@ -1,5 +1,5 @@
-const immutable = require('immutable');
 const Heuristics = require('./emphasis/heuristics.json');
+const immutable = require('immutable');
 module.exports = class Event {
 
     /**
@@ -22,21 +22,21 @@ module.exports = class Event {
             ) return 0;
             // The count of short words of all words.
             const count = words.reduce((a, b, i) => {
-                return (isNaN(a)
+                return (i === 1
                         ? a.length <= Heuristics.getPercentageOfShortWords.min_word_length
                             ? useMultiplier
                                 ? 1 / b.length
                                 : 1
                             : 0
                         : a) + (
-                    b.length <= Heuristics.getPercentageOfShortWords.min_word_length
-                        ? useMultiplier
-                            ? 1 / b.length
-                            : 1
-                        : 0
+                            b.length <= Heuristics.getPercentageOfShortWords.min_word_length
+                                ? useMultiplier
+                                    ? 1 / b.length
+                                    : 1
+                                : 0
                     );
             });
-            return count / (wordsCount || 0) * 100;
+            return count / (wordsCount || 1) * 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfShortWords]: ${e.message}`);
             return 0;
@@ -46,21 +46,38 @@ module.exports = class Event {
     /**
      * Returns a percentage of long words in a string.
      * @param words
-     * @param maxWordLength
+     * @param isRelevantCheck - Check whether the sentence is long enough for a check.
+     * @param useMultiplier - Increase the result based on how much the results exceed the limits.
      * @returns {number}
      */
-    static getPercentageOfLongWords(words, maxWordLength) {
+    static getPercentageOfLongWords(words, isRelevantCheck = true, useMultiplier = true) {
         try {
-            // Validate arguments.
-            if (words.constructor !== Array || typeof maxWordLength !== 'number') return 0;
-            // Calculate percentage.
-            let count = 0;
-            words.forEach((word) => {
-                if (typeof word === 'string' && word.length > maxWordLength) {
-                    count++;
+            // Words to be processed must exist or otherwise the result is
+            // obviously zero.
+            if (!words || words.constructor !== Array) return 0;
+            // Return zero if the sentence is too short.
+            const wordsCount = words.length;
+            const emphasis = Heuristics.getPercentageOfLongWords;
+            if (
+                isRelevantCheck &&
+                wordsCount <= emphasis.min_words_before_relevant
+            ) return 0;
+            // The count of long words of all words.
+            let longWords = 0;
+            const urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+            const regex = new RegExp(urlRegex);
+            words.forEach((word, i) => {
+                if (word.length >= emphasis.min_word_length) {
+                    // We are not going to count urls.
+                    if (!regex.test(word)) {
+                        longWords += useMultiplier
+                            ? 1 + (word.length - emphasis.min_word_length) * emphasis.multiplier
+                            : 1;
+                    }
                 }
             });
-            return Math.round((count / words.length) * 100);
+            const result = longWords / (wordsCount || 1) * 100;
+            return result < 100 ? result : 100;
         } catch (e) {
             console.log(`Error [Event][getPercentageOfLongWords]: ${e.message}`);
             return 0;
