@@ -30,12 +30,27 @@ module.exports = class EventMessage extends Event {
         }
     }
 
+    /**
+     * Analyse short words percentage.
+     *
+     * Certainty
+     * Compares the percentage to the word count. Longer the sentence is,
+     * the more certain it is that the percentage is correct.
+     *
+     * Severity
+     * Compare the percentage to the word count. Longer the sentence is,
+     * the more severe it is to have a high percentage.
+     *
+     * @param percentage
+     * @returns {*}
+     */
     getAnalysisForShortWords(percentage) {
         try {
             const wordsCount = this.message.length;
-            // Only words longer than 1 are relevant.
-            const certainty = Ensemble.getFromRange(wordsCount * (percentage / 10), 0, 100);
-            return {};
+            return {
+                certainty: Ensemble.getFromRange(wordsCount * (percentage / 10), 0, 100),
+                severity: Ensemble.getFromRange(wordsCount * (percentage / 100), 0, 10),
+            };
         } catch (e) {
             console.log(`Error [EventMessage][getAnalysisForShortWords]: ${e.message}`);
             return {
