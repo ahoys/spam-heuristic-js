@@ -19,8 +19,8 @@ module.exports = class Event {
     static getLinearAnalysis(percentage, baseValue) {
         try {
             return {
-                certainty: Ensemble.getFromRange(baseValue * (percentage / 10), 0, 100),
-                severity: Ensemble.getFromRange(baseValue * (percentage / 100), 0, 10),
+                certainty: baseValue * (percentage / 10),
+                severity: baseValue * (percentage / 100),
             };
         } catch (e) {
             console.log(`Error [EventMessage][getAnalysisForStringLength]: ${e.message}`);
@@ -190,9 +190,7 @@ module.exports = class Event {
      */
     set certainty(value) {
         try {
-            if (value > 100) this.certaintyValue = 100;
-            if (value < 0) this.certaintyValue = 0;
-            this.certaintyValue = Math.round(Number(value));
+            this.certaintyValue = Math.round(Ensemble.getFromRange(value, 0, 100));
         } catch (e) {
             console.log(`Error [Event][set certainty]: ${e.message}`);
         }
@@ -206,9 +204,7 @@ module.exports = class Event {
      */
     set severity(value) {
         try {
-            if (value > 10) this.severityValue = 10;
-            if (value < 0) this.severityValue = 0;
-            this.severityValue = Math.round(Number(value));
+            this.severityValue = Math.round(Ensemble.getFromRange(value, 0, 10));
         } catch (e) {
             console.log(`Error [Event][set severity]: ${e.message}`);
         }

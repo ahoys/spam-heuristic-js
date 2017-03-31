@@ -79,7 +79,8 @@ module.exports = class EventMessage extends Event {
         // Set certainty and severity.
         let certainty = 0;
         let severity = 0;
-        heuristicAnalysis.forEach((result) => {
+        Object.keys(heuristicAnalysis).forEach((key) => {
+            const result = heuristicAnalysis.key;
             // Pick the highest certainty to act as an overall certainty.
             if (result.certainty > certainty) {
                 certainty = result.certainty;
