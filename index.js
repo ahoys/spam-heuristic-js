@@ -5,6 +5,26 @@ const Immutable = require('immutable');
 module.exports = class Ensemble {
 
     /**
+     * Returns value inside a given range.
+     * @param value
+     * @param min
+     * @param max
+     * @returns {*}
+     */
+    static getFromRange(value = 0, min = 0, max = 0) {
+        try {
+            return value < min
+                ? min
+                : value > max
+                    ? max
+                    : value;
+        } catch (e) {
+            console.log(`Error [HeuristicEnsemble][getFromRange]: ${e.message}`);
+            return 0;
+        }
+    }
+
+    /**
      * Returns a suitable next key for an array or a map.
      * On the first run you should give -1 as a currentKey as otherwise your first index will be 1.
      * @param currentKey

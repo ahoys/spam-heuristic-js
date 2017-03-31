@@ -1,3 +1,4 @@
+const Ensemble = require('../index');
 const Event = require('./class.Event');
 const Emphasis = require('./emphasis/event.json');
 module.exports = class EventMessage extends Event {
@@ -31,6 +32,9 @@ module.exports = class EventMessage extends Event {
 
     getAnalysisForShortWords(percentage) {
         try {
+            const wordsCount = this.message.length;
+            // Only words longer than 1 are relevant.
+            const certainty = Ensemble.getFromRange(wordsCount * (percentage / 10), 0, 100);
             return {};
         } catch (e) {
             console.log(`Error [EventMessage][getAnalysisForShortWords]: ${e.message}`);
