@@ -18,7 +18,7 @@ module.exports = class EventMessage extends Event {
                     this.count
                 ),
                 getPercentageOfRepetitiveChars: Event.getLinearAnalysis(
-                    Event.getPercentageOfRepetitiveChars(this.parts),
+                    Event.getPercentageOfRepetitiveChars(this.message),
                     this.length
                 ),
                 getPercentageOfRepetitiveStrings: Event.getLinearAnalysis(
