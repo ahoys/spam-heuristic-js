@@ -1,6 +1,35 @@
+const Ensemble = require('../index');
 const Heuristics = require('./emphasis/heuristics.json');
 const immutable = require('immutable');
 module.exports = class Event {
+
+    /**
+     * Analyse word length percentages.
+     *
+     * Certainty
+     * Bigger the base value is, the more certain we can be about the result.
+     *
+     * Severity
+     * Bigger the base value is, the more severe it is to have a high percentage.
+     *
+     * @param percentage
+     * @param baseValue
+     * @returns {*}
+     */
+    static getLinearAnalysis(percentage, baseValue) {
+        try {
+            return {
+                certainty: Ensemble.getFromRange(baseValue * (percentage / 10), 0, 100),
+                severity: Ensemble.getFromRange(baseValue * (percentage / 100), 0, 10),
+            };
+        } catch (e) {
+            console.log(`Error [EventMessage][getAnalysisForStringLength]: ${e.message}`);
+            return {
+                certainty: 0,
+                severity: 0,
+            };
+        }
+    }
 
     /**
      * Returns a percentage of short words in a string.

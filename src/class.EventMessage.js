@@ -1,86 +1,34 @@
-const Ensemble = require('../index');
 const Event = require('./class.Event');
 const Emphasis = require('./emphasis/event.json');
 module.exports = class EventMessage extends Event {
 
     /**
      * Returns the heuristics' results.
-     * @param msgWords
      * @returns {object}
      */
-    getHeuristicAnalysis(msgWords) {
+    getHeuristicAnalysis() {
         try {
             return {
-                getPercentageOfShortWords: this.getAnalysisForStringLength(
-                    Event.getPercentageOfShortWords(msgWords)
+                getPercentageOfShortWords: Event.getLinearAnalysis(
+                    Event.getPercentageOfShortWords(this.parts),
+                    this.count
                 ),
-                getPercentageOfLongWords: this.getAnalysisForStringLength(
-                    Event.getPercentageOfLongWords(msgWords)
+                getPercentageOfLongWords: Event.getLinearAnalysis(
+                    Event.getPercentageOfLongWords(this.parts),
+                    this.count
                 ),
-                getPercentageOfRepetitiveChars: this.getAnalysisForRepetitiveChars(
-                    Event.getPercentageOfRepetitiveChars(this.message)
+                getPercentageOfRepetitiveChars: Event.getLinearAnalysis(
+                    Event.getPercentageOfRepetitiveChars(this.parts),
+                    this.length
                 ),
-                getPercentageOfRepetitiveStrings: this.getAnalysisForRepetitiveStrings(
-                    Event.getPercentageOfRepetitiveStrings(msgWords)
+                getPercentageOfRepetitiveStrings: Event.getLinearAnalysis(
+                    Event.getPercentageOfRepetitiveStrings(this.parts),
+                    this.count
                 ),
             }
         } catch (e) {
             console.log(`Error [EventMessage][getHeuristicPercentages]: ${e.message}`);
             return {};
-        }
-    }
-
-    /**
-     * Analyse word length percentages.
-     *
-     * Certainty
-     * Compares the percentage to the word count. Longer the sentence is,
-     * the more certain it is that the percentage is correct.
-     *
-     * Severity
-     * Compare the percentage to the word count. Longer the sentence is,
-     * the more severe it is to have a high percentage.
-     *
-     * @param percentage
-     * @returns {*}
-     */
-    getAnalysisForStringLength(percentage) {
-        try {
-            const wordsCount = this.message.length;
-            return {
-                certainty: Ensemble.getFromRange(wordsCount * (percentage / 10), 0, 100),
-                severity: Ensemble.getFromRange(wordsCount * (percentage / 100), 0, 10),
-            };
-        } catch (e) {
-            console.log(`Error [EventMessage][getAnalysisForStringLength]: ${e.message}`);
-            return {
-                certainty: 0,
-                severity: 0,
-            };
-        }
-    }
-
-    getAnalysisForRepetitiveChars(percentage) {
-        try {
-            return {};
-        } catch (e) {
-            console.log(`Error [EventMessage][getAnalysisForRepetitiveChars]: ${e.message}`);
-            return {
-                certainty: 0,
-                severity: 0,
-            };
-        }
-    }
-
-    getAnalysisForRepetitiveStrings(percentage) {
-        try {
-            return {};
-        } catch (e) {
-            console.log(`Error [EventMessage][getAnalysisForRepetitiveStrings]: ${e.message}`);
-            return {
-                certainty: 0,
-                severity: 0,
-            };
         }
     }
 
@@ -92,13 +40,41 @@ module.exports = class EventMessage extends Event {
         return String(this.msgValue);
     }
 
+    /**
+     * Returns length of the message.
+     * @returns {number}
+     */
+    get length() {
+        return Number(this.msgLength);
+    }
+
+    /**
+     * Returns parts of the message eg. words.
+     * @returns {number}
+     */
+    get parts() {
+        return this.msgParts;
+    }
+
+    /**
+     * Returns count of the message parts eg. words.
+     * @returns {Number|*}
+     */
+    get count() {
+        return this.msgPartsLength;
+    }
+
     constructor(msgValue) {
         super(msgValue);
         this.msgValue = String(msgValue);
-        const msgWords = this.msgValue.split(" ");
+        this.msgLength = String(msgValue).length;
+        this.msgParts = String(msgValue).split(' ');
+        this.msgPartsLength = this.msgParts.length;
 
         // Run heuristics for the value.
-        const heuristicAnalysis = this.getHeuristicAnalysis(msgWords);
+        const heuristicAnalysis = this.getHeuristicAnalysis();
+        console.log(msgValue);
+        console.log(heuristicAnalysis);
 
         // Set certainty and severity.
         let certainty = 0;
