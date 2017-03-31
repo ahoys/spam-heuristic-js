@@ -3,6 +3,30 @@ const Emphasis = require('./emphasis/event.json');
 module.exports = class EventMessage extends Event {
 
     /**
+     * Returns the heuristics' results.
+     * @param msgWords
+     * @returns {Array}
+     */
+    getHeuristicPercentages(msgWords) {
+        try {
+            const heuristicPercentages = [];
+            const msgWordsCount = msgWords.length;
+            heuristicPercentages.push(Event.getPercentageOfShortWords(msgWords));
+            heuristicPercentages.push(Event.getPercentageOfLongWords(msgWords));
+            heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
+                this.msgValue));
+            if (msgWordsCount > 4) {
+                heuristicPercentages.push(Event.getPercentageOfRepetitiveStrings(
+                    msgWords));
+            }
+            return heuristicPercentages;
+        } catch (e) {
+            console.log(`Error [EventMessage][getHeuristicPercentages]: ${e.message}`);
+            return [];
+        }
+    }
+
+    /**
      * Returns the message associated with the instance.
      * @returns {string}
      */
@@ -14,18 +38,9 @@ module.exports = class EventMessage extends Event {
         super(msgValue);
         this.msgValue = String(msgValue);
         const msgWords = this.msgValue.split(" ");
-        const msgWordsCount = msgWords.length;
 
         // Run heuristics for the value.
-        const heuristicPercentages = [];
-        heuristicPercentages.push(Event.getPercentageOfShortWords(msgWords));
-        heuristicPercentages.push(Event.getPercentageOfLongWords(msgWords));
-        heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
-            this.msgValue));
-        if (msgWordsCount > 4) {
-            heuristicPercentages.push(Event.getPercentageOfRepetitiveStrings(
-                msgWords));
-        }
+        const heuristicPercentages = this.getHeuristicPercentages(msgWords);
 
         // Analyse the results.
         let sum = 0;
