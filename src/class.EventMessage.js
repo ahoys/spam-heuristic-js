@@ -11,10 +11,10 @@ module.exports = class EventMessage extends Event {
     getHeuristicAnalysis(msgWords) {
         try {
             return {
-                getPercentageOfShortWords: this.getAnalysisForShortWords(
+                getPercentageOfShortWords: this.getAnalysisForStringLength(
                     Event.getPercentageOfShortWords(msgWords)
                 ),
-                getPercentageOfLongWords: this.getAnalysisForLongWords(
+                getPercentageOfLongWords: this.getAnalysisForStringLength(
                     Event.getPercentageOfLongWords(msgWords)
                 ),
                 getPercentageOfRepetitiveChars: this.getAnalysisForRepetitiveChars(
@@ -31,7 +31,7 @@ module.exports = class EventMessage extends Event {
     }
 
     /**
-     * Analyse short words percentage.
+     * Analyse word length percentages.
      *
      * Certainty
      * Compares the percentage to the word count. Longer the sentence is,
@@ -44,7 +44,7 @@ module.exports = class EventMessage extends Event {
      * @param percentage
      * @returns {*}
      */
-    getAnalysisForShortWords(percentage) {
+    getAnalysisForStringLength(percentage) {
         try {
             const wordsCount = this.message.length;
             return {
@@ -52,19 +52,7 @@ module.exports = class EventMessage extends Event {
                 severity: Ensemble.getFromRange(wordsCount * (percentage / 100), 0, 10),
             };
         } catch (e) {
-            console.log(`Error [EventMessage][getAnalysisForShortWords]: ${e.message}`);
-            return {
-                certainty: 0,
-                severity: 0,
-            };
-        }
-    }
-
-    getAnalysisForLongWords(percentage) {
-        try {
-            return {};
-        } catch (e) {
-            console.log(`Error [EventMessage][getAnalysisForLongWords]: ${e.message}`);
+            console.log(`Error [EventMessage][getAnalysisForStringLength]: ${e.message}`);
             return {
                 certainty: 0,
                 severity: 0,
