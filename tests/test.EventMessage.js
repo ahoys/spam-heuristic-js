@@ -87,3 +87,33 @@ exports.spamMessage_repeatingChars1 = function (test) {
     test.expect(2);
     test.done();
 };
+
+exports.spamMessage_repeatingStrings0 = function (test) {
+    const eventMessageObj = new EventMessage('is is is is is no no no no no');
+    const certainty = eventMessageObj.certainty;
+    const severity = eventMessageObj.severity;
+    test.equal(certainty, 100);
+    test.equal(severity, 5);
+    test.expect(2);
+    test.done();
+};
+
+exports.spamMessage_repeatingStrings1 = function (test) {
+    const eventMessageObj = new EventMessage('is is is is is is is is is is');
+    const certainty = eventMessageObj.certainty;
+    const severity = eventMessageObj.severity;
+    test.equal(certainty, 100);
+    test.equal(severity, 10);
+    test.expect(2);
+    test.done();
+};
+
+exports.spamMessage_repeatingStrings2 = function (test) {
+    const eventMessageObj = new EventMessage('is as no us');
+    const certainty = eventMessageObj.certainty;
+    const severity = eventMessageObj.severity;
+    test.equal(certainty, 0);
+    test.equal(severity, 0);
+    test.expect(2);
+    test.done();
+};
