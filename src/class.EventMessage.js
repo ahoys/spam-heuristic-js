@@ -5,24 +5,75 @@ module.exports = class EventMessage extends Event {
     /**
      * Returns the heuristics' results.
      * @param msgWords
-     * @returns {Array}
+     * @returns {object}
      */
-    getHeuristicPercentages(msgWords) {
+    getHeuristicAnalysis(msgWords) {
         try {
-            const heuristicPercentages = [];
-            const msgWordsCount = msgWords.length;
-            heuristicPercentages.push(Event.getPercentageOfShortWords(msgWords));
-            heuristicPercentages.push(Event.getPercentageOfLongWords(msgWords));
-            heuristicPercentages.push(Event.getPercentageOfRepetitiveChars(
-                this.msgValue));
-            if (msgWordsCount > 4) {
-                heuristicPercentages.push(Event.getPercentageOfRepetitiveStrings(
-                    msgWords));
+            return {
+                getPercentageOfShortWords: this.getAnalysisForShortWords(
+                    Event.getPercentageOfShortWords(msgWords)
+                ),
+                getPercentageOfLongWords: this.getAnalysisForLongWords(
+                    Event.getPercentageOfLongWords(msgWords)
+                ),
+                getPercentageOfRepetitiveChars: this.getAnalysisForRepetitiveChars(
+                    Event.getPercentageOfRepetitiveChars(this.message)
+                ),
+                getPercentageOfRepetitiveStrings: this.getAnalysisForRepetitiveStrings(
+                    Event.getPercentageOfRepetitiveStrings(msgWords)
+                ),
             }
-            return heuristicPercentages;
         } catch (e) {
             console.log(`Error [EventMessage][getHeuristicPercentages]: ${e.message}`);
-            return [];
+            return {};
+        }
+    }
+
+    getAnalysisForShortWords(percentage) {
+        try {
+            return {};
+        } catch (e) {
+            console.log(`Error [EventMessage][getAnalysisForShortWords]: ${e.message}`);
+            return {
+                certainty: 0,
+                severity: 0,
+            };
+        }
+    }
+
+    getAnalysisForLongWords(percentage) {
+        try {
+            return {};
+        } catch (e) {
+            console.log(`Error [EventMessage][getAnalysisForLongWords]: ${e.message}`);
+            return {
+                certainty: 0,
+                severity: 0,
+            };
+        }
+    }
+
+    getAnalysisForRepetitiveChars(percentage) {
+        try {
+            return {};
+        } catch (e) {
+            console.log(`Error [EventMessage][getAnalysisForRepetitiveChars]: ${e.message}`);
+            return {
+                certainty: 0,
+                severity: 0,
+            };
+        }
+    }
+
+    getAnalysisForRepetitiveStrings(percentage) {
+        try {
+            return {};
+        } catch (e) {
+            console.log(`Error [EventMessage][getAnalysisForRepetitiveStrings]: ${e.message}`);
+            return {
+                certainty: 0,
+                severity: 0,
+            };
         }
     }
 
@@ -40,30 +91,24 @@ module.exports = class EventMessage extends Event {
         const msgWords = this.msgValue.split(" ");
 
         // Run heuristics for the value.
-        const heuristicPercentages = this.getHeuristicPercentages(msgWords);
+        const heuristicAnalysis = this.getHeuristicAnalysis(msgWords);
 
-        // Analyse the results.
-        let sum = 0;
-        let max = 0;
-        let testCount = heuristicPercentages.length;
-        let violations = 0;
-        heuristicPercentages.forEach((percentage) => {
-            if (percentage > max) {
-                max = percentage;
+        // Set certainty and severity.
+        let certainty = 0;
+        let severity = 0;
+        heuristicAnalysis.forEach((result) => {
+            // Pick the highest certainty to act as an overall certainty.
+            if (result.certainty > certainty) {
+                certainty = result.certainty;
             }
-            if (percentage > 33) {
-                violations++;
+            // Pick the highest severity to act as an overall severity.
+            if (result.severity > severity) {
+                severity = result.severity;
             }
-            sum += percentage;
         });
-        const multiplier = sum / testCount / 100 + 1;
-
-        // Final results.
-        const resultCertainty = max * multiplier;
-        const resultSeverity = violations / testCount * 10 ;
 
         // Save the results.
-        super.certainty = resultCertainty > 100 ? 100 : resultCertainty;
-        super.severity = resultSeverity > 10 ? 10 : resultSeverity;
+        super.certainty = certainty > 100 ? 100 : certainty;
+        super.severity = severity > 10 ? 10 : severity;
     }
 };
