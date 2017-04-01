@@ -14,13 +14,15 @@ module.exports = class Event {
      *
      * @param percentage
      * @param baseValue
+     * @param cMultiplier
+     * @param sMultiplier
      * @returns {*}
      */
-    static getLinearAnalysis(percentage, baseValue) {
+    static getLinearAnalysis(percentage, baseValue, cMultiplier = 1, sMultiplier = 1) {
         try {
             return {
-                certainty: baseValue * (percentage / 10),
-                severity: baseValue * (percentage / 100),
+                certainty: (baseValue * (percentage / 10)) * cMultiplier,
+                severity: (baseValue * (percentage / 100)) * sMultiplier,
             };
         } catch (e) {
             console.log(`Error [EventMessage][getAnalysisForStringLength]: ${e.message}`);
