@@ -141,6 +141,15 @@ module.exports = class Event {
         }
     }
 
+    /**
+     * Returns a percentage of repetitive structure in an array of strings.
+     *
+     * The functionality is simple: we'll measure distances between distinct words
+     * and use that information to determine whether there are patterns.
+     *
+     * @param strings
+     * @returns {number}
+     */
     static getPercentageOfRepetitiveStructure(strings) {
         try {
             if (!strings || strings.constructor !== Array) return 0;
@@ -150,27 +159,36 @@ module.exports = class Event {
             // First we'll measure distances between the same words.
             strings.forEach((str, i) => {
                 if (strTable[str] === undefined) {
+                    // Initialization of a word.
+                    // The word can't have a distance as it is the only one.
                     strTable[str] = {
                         indexes: [i],
                         distanceToPrevious: [],
                         sameDistanceAsPreviousCount: 0,
                     };
                 } else {
+                    // Index of the previous word for a measurement.
                     const prevIndex = strTable[str]
                         .indexes[strTable[str].indexes.length - 1];
+                    // The distance of the previous word and its' parent.
                     const prevDistance = strTable[str]
                         .distanceToPrevious[strTable[str]
                         .distanceToPrevious.length - 1];
+                    // If the current distance is the same as the previous distance,
+                    // we have a pattern.
                     const distance = i - prevIndex;
                     strTable[str].distanceToPrevious.push(distance);
                     if (distance === prevDistance) {
-                        // The distance to the previous occurrence is the same!
+                        // Save how many occurrences there were so that
+                        // we can calculate a percentage that tells us how big part
+                        // of this word's usage was just repetition.
                         strTable[str].sameDistanceAsPreviousCount++;
                     }
                     strTable[str].indexes.push(i);
                 }
             });
-            // Next we'll calculate how similar the distances were. eg. were there patterns.
+            // Next we'll combine the results to find out the sentence level picture of the
+            // patterns.
             let sum = 0;
             let count = 0;
             Object.keys(strTable).forEach((key) => {
@@ -179,8 +197,7 @@ module.exports = class Event {
                 sum += thisStr.sameDistanceAsPreviousCount / (distanceCount || 1);
                 count++;
             });
-            const result = sum / (count || 1);
-            return Math.round(result * 100);
+            return Math.round(sum / (count || 1) * 100);
         } catch (e) {
             console.log(`Error [Event][getPercentageOfRepetitiveStructure]: ${e.message}`);
             return 0;
