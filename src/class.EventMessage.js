@@ -21,8 +21,8 @@ module.exports = class EventMessage extends Event {
                     Event.getPercentageOfRepetitiveChars(this.message),
                     this.length
                 ),
-                getPercentageOfRepetitiveStrings: Event.getLinearAnalysis(
-                    Event.getPercentageOfRepetitiveStrings(this.parts),
+                getPercentageOfRepetitiveStructure: Event.getLinearAnalysis(
+                    Event.getPercentageOfRepetitiveStructure(this.parts),
                     this.count
                 ),
             }
@@ -73,8 +73,6 @@ module.exports = class EventMessage extends Event {
 
         // Run heuristics for the value.
         const heuristicAnalysis = this.getHeuristicAnalysis();
-        console.log(msgValue);
-        console.log(heuristicAnalysis);
 
         // Set certainty and severity.
         let certainty = 0;

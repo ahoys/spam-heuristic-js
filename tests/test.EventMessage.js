@@ -137,3 +137,17 @@ exports.spamMessage_repeatingStrings4 = function (test) {
     test.expect(2);
     test.done();
 };
+
+exports.spamMessage_repeatingStrings5 = function (test) {
+    const eventMessageObj = new EventMessage('this is a fully valid test to trick the repeating strings ' +
+        'function this is a fully valid test to trick the repeating strings function this is a fully valid test ' +
+        'to trick the repeating strings function this is a fully valid test to trick the repeating strings ' +
+        'function this is a fully valid test to trick the repeating strings function this is a fully valid ' +
+        'test to trick the repeating strings function');
+    const certainty = eventMessageObj.certainty;
+    const severity = eventMessageObj.severity;
+    test.equal(certainty, 0);
+    test.equal(severity, 0);
+    test.expect(2);
+    test.done();
+};

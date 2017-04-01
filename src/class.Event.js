@@ -141,29 +141,48 @@ module.exports = class Event {
         }
     }
 
-    /**
-     * Returns a percentage of repetitive strings in an array.
-     * @param strings
-     * @returns {number}
-     */
-    static getPercentageOfRepetitiveStrings(strings) {
+    static getPercentageOfRepetitiveStructure(strings) {
         try {
-            if (strings.constructor !== Array) return 0;
-            let totalStrCount = strings.length;
-            let totalRepeatCountPercentage = 0;
-            const stringCounts = {};
-            // Count words.
-            strings.forEach((str) => {
-                stringCounts[str] = (stringCounts[str] || 0) + 1;
-            });
-            Object.keys(stringCounts).forEach((key) => {
-                if (stringCounts[key] > 1) {
-                    totalRepeatCountPercentage += stringCounts[key] / totalStrCount * 100;
+            if (!strings || strings.constructor !== Array) return 0;
+            const totalCount = strings.length;
+            if (totalCount < 1) return 0;
+            const strTable = {};
+            // First we'll measure distances between the same words.
+            strings.forEach((str, i) => {
+                if (strTable[str] === undefined) {
+                    strTable[str] = {
+                        indexes: [i],
+                        distanceToPrevious: [],
+                        sameDistanceAsPreviousCount: 0,
+                    };
+                } else {
+                    const prevIndex = strTable[str]
+                        .indexes[strTable[str].indexes.length - 1];
+                    const prevDistance = strTable[str]
+                        .distanceToPrevious[strTable[str]
+                        .distanceToPrevious.length - 1];
+                    const distance = i - prevIndex;
+                    strTable[str].distanceToPrevious.push(distance);
+                    if (distance === prevDistance) {
+                        // The distance to the previous occurrence is the same!
+                        strTable[str].sameDistanceAsPreviousCount++;
+                    }
+                    strTable[str].indexes.push(i);
                 }
             });
-            return Math.round(totalRepeatCountPercentage);
+            // Next we'll calculate how similar the distances were. eg. were there patterns.
+            let sum = 0;
+            let count = 0;
+            Object.keys(strTable).forEach((key) => {
+                const thisStr = strTable[key];
+                const distanceCount = thisStr.distanceToPrevious.length - 1;
+                sum += thisStr.sameDistanceAsPreviousCount / (distanceCount || 1);
+                count++;
+            });
+            const result = sum / (count || 1);
+            return Math.round(result * 100);
         } catch (e) {
-            console.log(`Error [Event][getRepetitiveStrings]: ${e.message}`);
+            console.log(`Error [Event][getPercentageOfRepetitiveStructure]: ${e.message}`);
             return 0;
         }
     }
@@ -188,7 +207,7 @@ module.exports = class Event {
      * Sets certainty for an event.
      * Certainty tells how probable it is that the heuristics have detected a real threat.
      * 0: No threats, 100: fully certain of a threat.
-     * @param value
+     * @param value {number}
      */
     set certainty(value) {
         try {
@@ -202,7 +221,7 @@ module.exports = class Event {
      * Sets severity for an event.
      * Severity tells how serious the violations are.
      * 0: Not serious at all, 10: very serious.
-     * @param value
+     * @param value {number}
      */
     set severity(value) {
         try {
@@ -215,7 +234,7 @@ module.exports = class Event {
     /**
      * Sets a new created timestamp.
      * Mainly for testing purposes.
-     * @param value
+     * @param value {number}
      */
     set created(value) {
         try {
