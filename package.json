@@ -13,7 +13,8 @@
     "url": "git://github.com/ahoys/spam-heuristic-js.git"
   },
   "dependencies" :{
-    "immutable": "~3.8.1"
+    "immutable": "~3.8.1",
+    "string-analysis-js": "~0.0.5"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",

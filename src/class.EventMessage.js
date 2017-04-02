@@ -1,5 +1,6 @@
 const Event = require('./class.Event');
 const Emphasis = require('./emphasis/event.json');
+const StringAnalysis = require('string-analysis-js');
 module.exports = class EventMessage extends Event {
 
     /**
@@ -10,19 +11,19 @@ module.exports = class EventMessage extends Event {
         try {
             return {
                 getPercentageOfShortWords: Event.getLinearAnalysis(
-                    Event.getPercentageOfShortWords(this.parts),
-                    this.count
+                  StringAnalysis.getPercentageOfShortWords(this.parts),
+                  this.count
                 ),
                 getPercentageOfLongWords: Event.getLinearAnalysis(
-                    Event.getPercentageOfLongWords(this.parts),
+                    StringAnalysis.getPercentageOfLongStrings(this.parts),
                     this.count
                 ),
                 getPercentageOfRepetitiveChars: Event.getLinearAnalysis(
-                    Event.getPercentageOfRepetitiveChars(this.message),
+                    StringAnalysis.getPercentageOfRepetitiveChars(this.message),
                     this.length
                 ),
                 getPercentageOfRepetitiveStructure: Event.getLinearAnalysis(
-                    Event.getPercentageOfRepetitiveStructure(this.parts),
+                    StringAnalysis.getPercentageOfRepetitiveStructure(this.parts),
                     this.count
                 ),
             }

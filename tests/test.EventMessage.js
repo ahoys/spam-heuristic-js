@@ -62,8 +62,8 @@ exports.spamMessage_longWords1_falseFlag = function (test) {
         'is fundamentally beyond the cognisance of any finite mind.');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 33);
-    test.equal(severity, 1);
+    test.equal(certainty, 0);
+    test.equal(severity, 0);
     test.expect(2);
     test.done();
 };
@@ -72,8 +72,8 @@ exports.spamMessage_repeatingChars0 = function (test) {
     const eventMessageObj = new EventMessage('aaaaaaaaaaaaaaaaaaaaaaaaaa!');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 67);
-    test.equal(severity, 6);
+    test.equal(certainty, 100);
+    test.equal(severity, 10);
     test.expect(2);
     test.done();
 };
@@ -82,8 +82,8 @@ exports.spamMessage_repeatingChars1 = function (test) {
     const eventMessageObj = new EventMessage('aaaaaaaAAAaaAAa    aaaaaaaaaa!');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 67);
-    test.equal(severity, 4);
+    test.equal(certainty, 100);
+    test.equal(severity, 10);
     test.expect(2);
     test.done();
 };
@@ -93,7 +93,7 @@ exports.spamMessage_repeatingStrings0 = function (test) {
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
     test.equal(certainty, 100);
-    test.equal(severity, 5);
+    test.equal(severity, 10);
     test.expect(2);
     test.done();
 };
@@ -112,8 +112,8 @@ exports.spamMessage_repeatingStrings2 = function (test) {
     const eventMessageObj = new EventMessage('is as no us');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
+    test.equal(certainty, 40);
+    test.equal(severity, 4);
     test.expect(2);
     test.done();
 };
@@ -122,8 +122,8 @@ exports.spamMessage_repeatingStrings3 = function (test) {
     const eventMessageObj = new EventMessage('spam test spam test spam test spam test');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
+    test.equal(certainty, 80);
+    test.equal(severity, 8);
     test.expect(2);
     test.done();
 };
@@ -132,8 +132,8 @@ exports.spamMessage_repeatingStrings4 = function (test) {
     const eventMessageObj = new EventMessage('spam test divider spam test divider spam test divider spam test divider');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
+    test.equal(certainty, 100);
+    test.equal(severity, 10);
     test.expect(2);
     test.done();
 };
@@ -146,8 +146,8 @@ exports.spamMessage_repeatingStrings5 = function (test) {
         'test to trick the repeating strings function');
     const certainty = eventMessageObj.certainty;
     const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
+    test.equal(certainty, 100);
+    test.equal(severity, 10);
     test.expect(2);
     test.done();
 };
