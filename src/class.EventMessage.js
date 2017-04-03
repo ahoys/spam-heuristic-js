@@ -9,23 +9,44 @@ module.exports = class EventMessage extends Event {
      */
     getHeuristicAnalysis() {
         try {
+            // Use available tools to measure the string.
+            const heuristics = {
+                getPercentageOfShortWords: [
+                    StringAnalysis.getPercentageOfShortWords,
+                    'parts'],
+                getPercentageOfLongWords: [
+                    StringAnalysis.getPercentageOfLongStrings,
+                    'parts'],
+                getPercentageOfRepetitiveChars: [
+                    StringAnalysis.getPercentageOfRepetitiveChars,
+                    'message'],
+                getPercentageOfRepetitiveStructure: [
+                    StringAnalysis.getPercentageOfRepetitiveStructure,
+                    'parts'],
+            }
+            // Analyse the results reflecting on the size of the source material.
+            const certainties = [];
+            Object.keys(heuristics).forEach((key, i) => {
+                const thisHeuristic = heuristics[key];
+                if (thisHeuristic[1] === 'parts') {
+                    const value = thisHeuristic[0](this.parts);
+                    certainties[i] = Event.getDirectlyProportionalAnalysis(
+                        value,
+                        this.count / 100,
+                        value
+                    ) * 100;
+                } else if (thisHeuristic[1] === 'message') {
+                    const value = thisHeuristic[0](this.message);
+                    certainties[i] = Event.getDirectlyProportionalAnalysis(
+                        value,
+                        this.length / 100,
+                        value
+                    ) * 100;
+                }
+            });
             return {
-                getPercentageOfShortWords: Event.getLinearAnalysis(
-                  StringAnalysis.getPercentageOfShortWords(this.parts),
-                  this.count
-                ),
-                getPercentageOfLongWords: Event.getLinearAnalysis(
-                    StringAnalysis.getPercentageOfLongStrings(this.parts),
-                    this.count
-                ),
-                getPercentageOfRepetitiveChars: Event.getLinearAnalysis(
-                    StringAnalysis.getPercentageOfRepetitiveChars(this.message),
-                    this.length
-                ),
-                getPercentageOfRepetitiveStructure: Event.getLinearAnalysis(
-                    StringAnalysis.getPercentageOfRepetitiveStructure(this.parts),
-                    this.count
-                ),
+                certainty: Math.max(...certainties),
+                severity: 0,
             }
         } catch (e) {
             console.log(`Error [EventMessage][getHeuristicPercentages]: ${e.message}`);
@@ -75,23 +96,8 @@ module.exports = class EventMessage extends Event {
         // Run heuristics for the value.
         const heuristicAnalysis = this.getHeuristicAnalysis();
 
-        // Set certainty and severity.
-        let certainty = 0;
-        let severity = 0;
-        Object.keys(heuristicAnalysis).forEach((key) => {
-            const result = heuristicAnalysis[key];
-            // Pick the highest certainty to act as an overall certainty.
-            if (result.certainty > certainty) {
-                certainty = result.certainty;
-            }
-            // Pick the highest severity to act as an overall severity.
-            if (result.severity > severity) {
-                severity = result.severity;
-            }
-        });
-
         // Save the results.
-        super.certainty = certainty;
-        super.severity = severity;
+        super.certainty = heuristicAnalysis.certainty;
+        super.severity = heuristicAnalysis.severity;
     }
 };

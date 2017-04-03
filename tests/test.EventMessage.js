@@ -1,5 +1,6 @@
 // nodeunit tests/test.EventMessage.js
 const EventMessage = require('../src/class.EventMessage');
+const strings = require('./strings.json');
 
 // Tests --------------------------------------
 
@@ -15,139 +16,17 @@ exports.initialize = function (test) {
     test.done();
 };
 
-exports.spamMessage_repeatingWords = function (test) {
-    const eventMessageObj = new EventMessage('test test test test test test');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
-    test.expect(2);
+exports.strings__mixed_test_array_0 = (test) => {
+    strings["mixed_test_array_0"].forEach((row, i) => {
+        const row_str = row[0];
+        const row_certaintyGoal = row[1];
+        const row_severityGoal = row[2];
+        const row_isValidMessage = row[3];
+        const eventMessageObj = new EventMessage(row_str);
+        const certainty = eventMessageObj.certainty >= row_certaintyGoal;
+        const severity = eventMessageObj.severity >= row_severityGoal;
+        test.equal(certainty, row_isValidMessage, `CERTAINTY >> row index: ${i}, result: ${eventMessageObj.certainty}, limit: ${row_certaintyGoal}, str: ${row_str.substr(0, 10)}`);
+        test.equal(severity, true, `SEVERITY >> row index: ${i}, result: ${eventMessageObj.severity}, limit: ${row_severityGoal}, str: ${row_str.substr(0, 10)}`);
+    });
     test.done();
-};
-
-exports.spamMessage_shortWords0 = function (test) {
-    const eventMessageObj = new EventMessage('t h i s i s s p a m ee hh h');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 33);
-    test.equal(severity, 3);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_shortWords1_falseFlag = function (test) {
-    const eventMessageObj = new EventMessage('oh my how odd is it spam rly im not spamming');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 33);
-    test.equal(severity, 3);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_longWords0 = function (test) {
-    const eventMessageObj = new EventMessage('thesewordsareartificiallylongandimjustrepeatingthem ' +
-        'thesewordsareartificiallylongandimjustrepeatingthem');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 33);
-    test.equal(severity, 3);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_longWords1_falseFlag = function (test) {
-    const eventMessageObj = new EventMessage('The manifestation of the existential paradigm is ' +
-        'infinitesimally larger than the exponentially evolved humanistic peon; indeed this precept ' +
-        'is fundamentally beyond the cognisance of any finite mind.');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 0);
-    test.equal(severity, 0);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingChars0 = function (test) {
-    const eventMessageObj = new EventMessage('aaaaaaaaaaaaaaaaaaaaaaaaaa!');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingChars1 = function (test) {
-    const eventMessageObj = new EventMessage('aaaaaaaAAAaaAAa    aaaaaaaaaa!');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings0 = function (test) {
-    const eventMessageObj = new EventMessage('is is is is is no no no no no');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings1 = function (test) {
-    const eventMessageObj = new EventMessage('is is is is is is is is is is');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings2 = function (test) {
-    const eventMessageObj = new EventMessage('is as no us');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 40);
-    test.equal(severity, 4);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings3 = function (test) {
-    const eventMessageObj = new EventMessage('spam test spam test spam test spam test');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 80);
-    test.equal(severity, 8);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings4 = function (test) {
-    const eventMessageObj = new EventMessage('spam test divider spam test divider spam test divider spam test divider');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
-
-exports.spamMessage_repeatingStrings5 = function (test) {
-    const eventMessageObj = new EventMessage('this is a fully valid test to trick the repeating strings ' +
-        'function this is a fully valid test to trick the repeating strings function this is a fully valid test ' +
-        'to trick the repeating strings function this is a fully valid test to trick the repeating strings ' +
-        'function this is a fully valid test to trick the repeating strings function this is a fully valid ' +
-        'test to trick the repeating strings function');
-    const certainty = eventMessageObj.certainty;
-    const severity = eventMessageObj.severity;
-    test.equal(certainty, 100);
-    test.equal(severity, 10);
-    test.expect(2);
-    test.done();
-};
+}

@@ -34,6 +34,24 @@ module.exports = class Event {
     }
 
     /**
+     * Returns a directly propotional value that is as big or smaller than
+     * the focus of interest, a.
+     * @param {number} a : Base value & maximum result.
+     * @param {number} b : Reflector. Result will be reflection of this value. 
+     * @param {number} max : Limitter. If b >= max, the result will be a.
+     * @returns {number}
+     */
+    static getDirectlyProportionalAnalysis(a = 0, b = 100, max = 10) {
+        try {
+            const result = (a * b) / (max || 1);
+            return result > max ? max : result;
+        } catch (e) {
+            console.log(`Error [Event][getReflectedValue]: ${e.message}`);
+            return 0;
+        }
+    }
+
+    /**
      * Returns a percentage of short words in a string.
      * @param words
      * @param isRelevantCheck

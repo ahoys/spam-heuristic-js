@@ -1,4 +1,14 @@
 {
+  "mixed_test_array_0": [
+    ["this is a fully valid test to trick the repeating strings function this is a fully valid test to trick the repeating strings function this is a fully valid test to trick the repeating strings function this is a fully valid test to trick the repeating strings function this is a fully valid test to trick the repeating strings function this is a fully valid test to trick the repeating strings function", 50, 0, true],
+    ["spam test divider spam test divider spam test divider spam test divider", 12, 0, true],
+    ["spam test spam test spam test spam test spam test spam test spam test spam test", 16, 0, true],
+    ["is as no us", 50, 0, false],
+    ["is is is is is is is is is is is is is is is is is is is is is is is is is is is is is is", 30, 0, true],
+    ["is is is is is no no no no no is is is is is no no no no no", 20, 0, true],
+    ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 68, 0, true],
+    ["The manifestation of the existential paradigm is infinitesimally larger than the exponentially evolved humanistic peon; indeed this precept is fundamentally beyond the cognisance of any finite mind.", 28, 0, false]
+  ],
   "group_ids": [
     "group_id_987",
     "group_id_876",
