@@ -14,10 +14,10 @@
   },
   "dependencies" :{
     "immutable": "~3.8.1",
-    "string-analysis-js": "~0.0.5"
+    "string-analysis-js": "^0.0.8"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
-    "babel-preset-es2015": "^6.22.0"
+    "babel-preset-es2015": "^6.24.0"
   }
 }
