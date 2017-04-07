@@ -12,7 +12,7 @@ module.exports = class EventMessage extends Event {
             // Use available tools to measure the string.
             const heuristics = {
                 getPercentageOfShortWords: [
-                    StringAnalysis.getPercentageOfShortWords,
+                    StringAnalysis.getPercentageOfShortStrings,
                     'parts'],
                 getPercentageOfLongWords: [
                     StringAnalysis.getPercentageOfLongStrings,
@@ -27,6 +27,7 @@ module.exports = class EventMessage extends Event {
             // Analyse the results reflecting on the size of the source material.
             const certainties = [];
             Object.keys(heuristics).forEach((key, i) => {
+                console.log(key, i);
                 const thisHeuristic = heuristics[key];
                 if (thisHeuristic[1] === 'parts') {
                     const value = thisHeuristic[0](this.parts);
