@@ -20,7 +20,7 @@ module.exports = class EventMessage extends Event {
                 certainties.push(
                   Event.getDirectlyProportionalAnalysis(
                     percentage,
-                    size,
+                    size / 100,
                     percentage
                   ) * 100
                 );
