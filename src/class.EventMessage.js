@@ -9,41 +9,21 @@ module.exports = class EventMessage extends Event {
      */
     getHeuristicAnalysis() {
         try {
-            // Use available tools to measure the string.
-            const heuristics = {
-                getPercentageOfShortWords: [
-                    StringAnalysis.getPercentageOfShortStrings,
-                    'parts'],
-                getPercentageOfLongWords: [
-                    StringAnalysis.getPercentageOfLongStrings,
-                    'parts'],
-                getPercentageOfRepetitiveChars: [
-                    StringAnalysis.getPercentageOfRepetitiveChars,
-                    'message'],
-                getPercentageOfRepetitiveStructure: [
-                    StringAnalysis.getPercentageOfRepetitiveStructure,
-                    'parts'],
-            }
-            // Analyse the results reflecting on the size of the source material.
             const certainties = [];
-            Object.keys(heuristics).forEach((key, i) => {
-                console.log(key, i);
-                const thisHeuristic = heuristics[key];
-                if (thisHeuristic[1] === 'parts') {
-                    const value = thisHeuristic[0](this.parts);
-                    certainties[i] = Event.getDirectlyProportionalAnalysis(
-                        value,
-                        this.count / 100,
-                        value
-                    ) * 100;
-                } else if (thisHeuristic[1] === 'message') {
-                    const value = thisHeuristic[0](this.message);
-                    certainties[i] = Event.getDirectlyProportionalAnalysis(
-                        value,
-                        this.length / 100,
-                        value
-                    ) * 100;
-                }
+            this.tools.forEach((tool) => {
+                const { func, preferredStringFormat } = tool;
+                const percentage = func(
+                    preferredStringFormat === 'Array' ? this.parts : this.message
+                );
+                const size = preferredStringFormat === 'Array' ? this.count : this.length;
+                console.log(tool.key, percentage, preferredStringFormat === 'Array' ? this.parts : this.message);
+                certainties.push(
+                  Event.getDirectlyProportionalAnalysis(
+                    percentage,
+                    size,
+                    percentage
+                  ) * 100
+                );
             });
             return {
                 certainty: Math.max(...certainties),
@@ -87,12 +67,22 @@ module.exports = class EventMessage extends Event {
         return this.msgPartsLength;
     }
 
+    /**
+    * Returns and array of string tools available.
+    * @returns {Array}
+    */
+    get tools() {
+        return this.strTools;
+    }
+
     constructor(msgValue) {
         super(msgValue);
         this.msgValue = String(msgValue);
         this.msgLength = String(msgValue).length;
         this.msgParts = String(msgValue).split(' ');
         this.msgPartsLength = this.msgParts.length;
+        this.strTools = StringAnalysis.getAll()
+          .filter(x => ['Array', 'string'].indexOf(x.preferredStringFormat) !== -1);
 
         // Run heuristics for the value.
         const heuristicAnalysis = this.getHeuristicAnalysis();
