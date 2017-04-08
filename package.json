@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git://github.com/ahoys/spam-heuristic-js.git"
   },
-  "dependencies" :{
+  "dependencies": {
     "immutable": "~3.8.1",
     "string-analysis-js": "~0.1.0"
   },

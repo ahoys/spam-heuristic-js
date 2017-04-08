@@ -6,37 +6,37 @@ const defaultEmphasis = require('../configs/defaultEmphasis.json');
 // Tests --------------------------------------
 
 exports.initialize = function (test) {
-    const heuristicObj = new Heuristic();
-    test.equal(typeof heuristicObj, 'object');
-    test.equal(heuristicObj.emphasis, defaultEmphasis);
-    test.deepEqual(heuristicObj.suspects, Immutable.Map({}));
-    test.deepEqual(heuristicObj.groups, Immutable.Map({}));
-    test.deepEqual(heuristicObj.getAnalysis(), {
-        certainty: 0,
-        severity: 0
-    });
-    test.expect(5);
-    test.done();
+  const heuristicObj = new Heuristic();
+  test.equal(typeof heuristicObj, 'object');
+  test.equal(heuristicObj.emphasis, defaultEmphasis);
+  test.deepEqual(heuristicObj.suspects, Immutable.Map({}));
+  test.deepEqual(heuristicObj.groups, Immutable.Map({}));
+  test.deepEqual(heuristicObj.getAnalysis(), {
+    certainty: 0,
+    severity: 0
+  });
+  test.expect(5);
+  test.done();
 };
 
 exports.getMapId = function (test) {
-    const expected = [0, 1, 2, 0, 1];
-    let id = -1;
-    for (let i = 0; i < 5; ++i) {
-        id = Heuristic.getMapId(id, 2);
-        test.equal(id, expected[i]);
-    }
-    test.expect(5);
-    test.done();
+  const expected = [0, 1, 2, 0, 1];
+  let id = -1;
+  for (let i = 0; i < 5; ++i) {
+    id = Heuristic.getMapId(id, 2);
+    test.equal(id, expected[i]);
+  }
+  test.expect(5);
+  test.done();
 };
 
 exports.getAnalysisWithMsg = function (test) {
-    const heuristicObj = new Heuristic();
-    const actual = heuristicObj.getAnalysis('msg');
-    test.deepEqual(actual, {
-        certainty: 0,
-        severity: 0
-    });
-    test.expect(1);
-    test.done();
+  const heuristicObj = new Heuristic();
+  const actual = heuristicObj.getAnalysis('msg');
+  test.deepEqual(actual, {
+    certainty: 0,
+    severity: 0
+  });
+  test.expect(1);
+  test.done();
 };
